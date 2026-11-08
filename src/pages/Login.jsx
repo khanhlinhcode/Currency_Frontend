@@ -5,6 +5,7 @@ import axios from "../api/axios";
 import { AuthContext } from "../context/AuthContext";
 
 export default function Login() {
+  const showDemoCredentials = import.meta.env.DEV;
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
 
@@ -48,11 +49,13 @@ export default function Login() {
 
       setError(
         isCredentialError
-          ? "Sai tài khoản hoặc mật khẩu. Tài khoản mặc định: admin / admin123"
+          ? showDemoCredentials
+            ? "Sai tài khoản hoặc mật khẩu. Tài khoản mẫu: admin / admin123"
+            : "Sai tài khoản hoặc mật khẩu."
           : typeof message === "string"
             ? message
             : requestError.code === "ERR_NETWORK"
-              ? "Không kết nối được backend tại http://127.0.0.1:8000."
+              ? "Không kết nối được dịch vụ nhận diện. Vui lòng thử lại."
               : "Đăng nhập thất bại. Vui lòng kiểm tra lại tài khoản.",
       );
     } finally {
@@ -66,19 +69,21 @@ export default function Login() {
         <p className="auth-kicker">Banknote Security Workspace</p>
         <h1>Đăng nhập trung tâm điều phối nhận diện tiền giấy quốc tế</h1>
         <p>
-          Xác thực admin để theo dõi độ tin cậy mô hình, lịch sử nhận diện và
+          Đăng nhập để theo dõi độ tin cậy mô hình, lịch sử nhận diện và
           cảnh báo nguy cơ tiền giả theo thời gian thực.
         </p>
       </section>
 
       <div className="auth-card">
-        <h2>Admin Portal</h2>
+        <h2>Cổng quản lý</h2>
         <p className="auth-card__subtitle">
           Chỉ người có quyền mới truy cập được trang giám sát.
         </p>
-        <p className="auth-helper">
-          Demo backend hiện tại: <strong>admin</strong> / <strong>admin123</strong>
-        </p>
+        {showDemoCredentials && (
+          <p className="auth-helper">
+            Tài khoản mẫu local: <strong>admin</strong> / <strong>admin123</strong>
+          </p>
+        )}
 
         <form onSubmit={handleLogin} className="auth-form">
           <label className="auth-field">
@@ -116,13 +121,15 @@ export default function Login() {
           )}
 
           <div className="auth-actions">
-            <button
-              type="button"
-              className="secondary-btn"
-              onClick={fillDemoCredentials}
-            >
-              Điền tài khoản mẫu
-            </button>
+            {showDemoCredentials && (
+              <button
+                type="button"
+                className="secondary-btn"
+                onClick={fillDemoCredentials}
+              >
+                Điền tài khoản mẫu
+              </button>
+            )}
 
             <button type="submit" className="primary-btn" disabled={isLoading}>
               {isLoading ? (
