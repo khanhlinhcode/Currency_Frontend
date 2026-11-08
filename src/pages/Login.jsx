@@ -70,7 +70,7 @@ export default function Login() {
         <h1>Đăng nhập trung tâm điều phối nhận diện tiền giấy quốc tế</h1>
         <p>
           Đăng nhập để theo dõi độ tin cậy mô hình, lịch sử nhận diện và
-          cảnh báo nguy cơ tiền giả theo thời gian thực.
+          các trường hợp cần kiểm tra thủ công.
         </p>
       </section>
 

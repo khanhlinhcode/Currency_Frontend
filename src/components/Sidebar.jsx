@@ -5,8 +5,8 @@ import {
   CircleHelp,
   Globe2,
   History,
+  Layers3,
   LayoutDashboard,
-  ShieldCheck,
   UsersRound,
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
@@ -17,7 +17,7 @@ const commonLinks = [
 ];
 
 const protectedLinks = [
-  { to: "/history", label: "Lịch sử kiểm định", icon: History },
+  { to: "/history", label: "Lịch sử nhận diện", icon: History },
   { to: "/dashboard", label: "Bảng điều khiển", icon: LayoutDashboard },
   { to: "/model-info", label: "Thông tin mô hình", icon: CircleHelp },
 ];
@@ -43,18 +43,18 @@ export default function Sidebar({ mobileNavOpen, onNavigate }) {
         </span>
         <div>
           <p className="sidebar__brand-title">Banknote AI</p>
-          <p className="sidebar__brand-subtitle">Verification Suite</p>
+          <p className="sidebar__brand-subtitle">Recognition Workspace</p>
         </div>
       </div>
 
       <div className="sidebar__meta">
         <span>
           <Globe2 size={14} />
-          86+ quốc gia
+          3 quốc gia
         </span>
         <span>
-          <ShieldCheck size={14} />
-          Tối ưu phát hiện giả mạo
+          <Layers3 size={14} />
+          25 lớp nhận diện
         </span>
       </div>
 
