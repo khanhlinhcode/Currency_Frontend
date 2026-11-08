@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   AlertCircle,
-  CircleDollarSign,
   LoaderCircle,
   Radar,
   ShieldAlert,
@@ -139,8 +138,9 @@ export default function Dashboard() {
         <p className="panel-kicker">Operations Command Center</p>
         <h2>Dashboard phân tích mô hình nhận diện tiền giấy</h2>
         <p>
-          Dashboard tự refresh khi có dự đoán mới để theo dõi phân bố loại tiền,
-          xu hướng theo thời gian và tỷ lệ nghi vấn so với bình thường.
+          Theo dõi lượt nhận diện, tốc độ xử lý và độ đúng trên các bản ghi đã được kiểm tra.
+          Các trường hợp cần xem lại chỉ phản ánh độ tin cậy thấp, không xác thực tiền giả.
+          {stats?.legacy_predictions ? ` Có ${stats.legacy_predictions} bản ghi cũ chưa xác minh và không tính vào các chỉ số này.` : ""}
         </p>
       </section>
 
@@ -174,11 +174,12 @@ export default function Dashboard() {
             <article className="panel stat-card">
               <div className="stat-card__head">
                 <span className="stat-card__icon">
-                  <CircleDollarSign size={18} />
+                  <TrendingUp size={18} />
                 </span>
-                <p>Tổng giá trị ước tính</p>
+                <p>Inference p95 · 1000 lượt gần nhất</p>
               </div>
-              <h3>{formatMetric(stats?.total_estimated_value)}</h3>
+              <h3>{stats?.inference_latency?.p95_ms == null ? "--" : `${formatMetric(stats.inference_latency.p95_ms)} ms`}</h3>
+              <p>{formatMetric(stats?.inference_latency_sample_size)} lượt có đo riêng model</p>
             </article>
 
             <article className="panel stat-card">
@@ -186,7 +187,7 @@ export default function Dashboard() {
                 <span className="stat-card__icon">
                   <ShieldAlert size={18} />
                 </span>
-                <p>Số lượt nghi vấn</p>
+                <p>Cần xem lại</p>
               </div>
               <h3>{formatMetric(suspiciousCount)}</h3>
             </article>
@@ -199,6 +200,27 @@ export default function Dashboard() {
                 <p>Số loại tiền đã nhận diện</p>
               </div>
               <h3>{formatMetric(stats?.detected_currencies_count)}</h3>
+            </article>
+          </section>
+
+          <section className="dashboard-grid dashboard-grid--four">
+            <article className="panel stat-card">
+              <div className="stat-card__head"><p>Model đang chạy</p></div>
+              <h3>{stats?.model_version || "--"}</h3>
+            </article>
+            <article className="panel stat-card">
+              <div className="stat-card__head"><p>Chờ model p95</p></div>
+              <h3>{stats?.queue_latency?.p95_ms == null ? "--" : `${formatMetric(stats.queue_latency.p95_ms)} ms`}</h3>
+              <p>{formatMetric(stats?.inference_latency_sample_size)} lượt có đo hàng đợi</p>
+            </article>
+            <article className="panel stat-card">
+              <div className="stat-card__head"><p>Tổng xử lý p95</p></div>
+              <h3>{stats?.processing_latency?.p95_ms == null ? "--" : `${formatMetric(stats.processing_latency.p95_ms)} ms`}</h3>
+            </article>
+            <article className="panel stat-card">
+              <div className="stat-card__head"><p>Độ đúng bản ghi đã duyệt</p></div>
+              <h3>{stats?.reviewed_accuracy == null ? "--" : `${(stats.reviewed_accuracy * 100).toFixed(1)}%`}</h3>
+              <p>{formatMetric(stats?.reviewed_count)} bản ghi; không đại diện cho test set</p>
             </article>
           </section>
 

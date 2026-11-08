@@ -357,10 +357,15 @@ export default function Predict() {
               <CircleAlert size={18} />
               <p>
                 Độ tin cậy thấp hoặc mẫu ảnh có dấu hiệu không phải tiền giấy.
-                Cần kiểm tra thủ công để loại trừ tiền giả.
+                Cần kiểm tra thủ công. Hệ thống này không xác thực tiền thật hoặc tiền giả.
               </p>
             </div>
           )}
+
+          <p className="result-label">
+            Model {result.model_version || "--"} · Chờ {Math.round((result.queue_time || 0) * 1000)} ms · Inference {Math.round((result.inference_time || 0) * 1000)} ms ·
+            Tổng xử lý {Math.round((result.processing_time || 0) * 1000)} ms
+          </p>
 
           <div className="top3-section">
             <div className="panel-title">

@@ -1,5 +1,11 @@
 # Deployment Guide
 
+For the free diagnostic staging path, use `render.free.yaml` in this frontend repository and see `currency-backend/docs/free-staging-runbook.md`. Set `VITE_API_URL` to the Render Free backend HTTPS URL and `VITE_APP_ENV=staging`. The backend model remains a candidate until grouped data passes release gates.
+
+Current production setup is documented in `currency-backend/docs/production-runbook.md`. Set `VITE_API_URL` in Vercel to the deployed backend HTTPS URL before building. The backend uses Docker, PostgreSQL, private S3 compatible storage, Alembic migrations and `/ready` health checks.
+
+For staging, set `VITE_API_URL` to the staging backend and `VITE_APP_ENV=staging`. The prediction page then requires login, matching the staging API policy. See `currency-backend/docs/staging-runbook.md` for the isolated database, bucket and benchmark gates.
+
 ## Frontend (Vercel)
 
 ### Files in this repo
@@ -15,27 +21,26 @@
 
 ## Backend (Render / Railway)
 
-Backend code is in sibling folder: `../DA_2`.
+Backend code is in sibling folder: `../currency-backend`.
 
 ### Required start command
 
-Use module execution to avoid missing `uvicorn` shell path issues:
+The Dockerfile starts the backend. Render and Railway run the migration before starting it:
 
 ```bash
-python -m uvicorn api.main:app --host 0.0.0.0 --port $PORT
+python -m alembic upgrade head
 ```
 
 ### Environment recommendations
 
 - Python `3.11.x`
-- Install from `requirements.txt`
+- Docker installs `requirements-api.txt`
 - Keep CORS allow-list strict in production
-- Rotate `SECRET_KEY` in `api/auth.py` via environment variable
+- Provide `SECRET_KEY` through a secret environment variable
 
 ## Production checklist
 
-1. Move secrets (`SECRET_KEY`) to environment variables.
-2. Replace SQLite with managed PostgreSQL for multi-instance production.
-3. Configure persistent object storage for uploaded images.
-4. Add centralized logs and error monitoring.
-5. Add HTTPS custom domain for frontend and backend.
+1. Pass dataset audit and model evaluation gates; set release manifest to `approved`.
+2. Configure managed PostgreSQL and private S3 compatible storage.
+3. Configure frontend `VITE_API_URL` and backend `CORS_ORIGINS` with exact HTTPS origins.
+4. Verify `/ready`, login, prediction, history, review and dashboard after deploy.

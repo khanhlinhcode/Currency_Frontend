@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import {
@@ -17,6 +17,7 @@ import {
   X,
 } from "lucide-react";
 import axios from "../api/axios";
+import { AuthContext } from "../context/AuthContext";
 
 const CURRENCY_OPTIONS = [
   { value: "", label: "Tất cả currency" },
@@ -65,6 +66,7 @@ function getErrorMessage(requestError, fallback) {
 }
 
 export default function History() {
+  const { isAdmin } = useContext(AuthContext);
   const [records, setRecords] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
@@ -85,6 +87,16 @@ export default function History() {
   const [detailLoading, setDetailLoading] = useState(false);
   const [detailError, setDetailError] = useState("");
   const [detailRecord, setDetailRecord] = useState(null);
+  const [reviewLabels, setReviewLabels] = useState([]);
+  const [reviewLabel, setReviewLabel] = useState("");
+  const [reviewSaving, setReviewSaving] = useState(false);
+  const [reviewError, setReviewError] = useState("");
+
+  useEffect(() => {
+    axios.get("/model-info").then((response) => {
+      setReviewLabels(response.data?.classes || []);
+    }).catch(() => setReviewLabels([]));
+  }, []);
 
   const [isExportingCsv, setIsExportingCsv] = useState(false);
   const [isExportingPdf, setIsExportingPdf] = useState(false);
@@ -153,12 +165,42 @@ export default function History() {
     try {
       const res = await axios.get(`/history/${recordId}`);
       setDetailRecord(res.data ?? null);
+      setReviewLabel(res.data?.actual_label || "");
+      setReviewError("");
     } catch (requestError) {
       setDetailError(
         getErrorMessage(requestError, "Không thể tải chi tiết bản ghi này."),
       );
     } finally {
       setDetailLoading(false);
+    }
+  };
+
+  const submitReview = async () => {
+    if (!detailRecord || !reviewLabel) return;
+    try {
+      setReviewSaving(true);
+      setReviewError("");
+      const response = await axios.post(`/history/${detailRecord.id}/review`, { actual_label: reviewLabel });
+      setDetailRecord(response.data);
+      window.dispatchEvent(new CustomEvent("prediction-created"));
+    } catch (requestError) {
+      setReviewError(getErrorMessage(requestError, "Không thể lưu nhãn kiểm tra."));
+    } finally {
+      setReviewSaving(false);
+    }
+  };
+
+  const deleteRecord = async () => {
+    if (!detailRecord || !window.confirm("Xóa bản ghi và ảnh này?")) return;
+    try {
+      await axios.delete(`/history/${detailRecord.id}`);
+      setRecords((items) => items.filter((item) => item.id !== detailRecord.id));
+      setTotal((current) => Math.max(0, current - 1));
+      closeDetail();
+      window.dispatchEvent(new CustomEvent("prediction-created"));
+    } catch (requestError) {
+      setDetailError(getErrorMessage(requestError, "Không thể xóa bản ghi."));
     }
   };
 
@@ -539,13 +581,14 @@ export default function History() {
               <div className="detail-content">
                 {detailRecord.image_url ? (
                   <img
-                    src={`${axios.defaults.baseURL}${detailRecord.image_url}`}
+                    src={detailRecord.image_url.startsWith("http") ? detailRecord.image_url : `${axios.defaults.baseURL}${detailRecord.image_url}`}
                     alt={detailRecord.filename}
                     className="detail-image"
                   />
                 ) : null}
 
                 <div className="detail-grid">
+                  {detailRecord.legacy_unverified ? <p role="alert"><strong>Bản ghi cũ:</strong> ánh xạ nhãn chưa được xác minh; cần đánh giá lại bằng model hiện tại.</p> : null}
                   <p>
                     <strong>File:</strong> {detailRecord.filename}
                   </p>
@@ -566,6 +609,26 @@ export default function History() {
                   <p>
                     <strong>Người yêu cầu:</strong> {detailRecord.requested_by || "--"}
                   </p>
+                  <p>
+                    <strong>Model:</strong> {detailRecord.model_version || "--"} ·
+                    <strong> Chờ model:</strong> {detailRecord.queue_time == null ? "--" : `${Math.round(detailRecord.queue_time * 1000)} ms`}
+                    <strong> Tổng xử lý:</strong> {detailRecord.processing_time == null ? "--" : `${Math.round(detailRecord.processing_time * 1000)} ms`}
+                  </p>
+                </div>
+
+                <div className="review-form">
+                  <label htmlFor="review-label">Nhãn kiểm tra thủ công</label>
+                  <select id="review-label" value={reviewLabel} onChange={(event) => setReviewLabel(event.target.value)}>
+                    <option value="">Chọn nhãn đúng</option>
+                    <option value="unknown">Không phải lớp đã hỗ trợ</option>
+                    {reviewLabels.map((label) => <option key={label} value={label}>{label}</option>)}
+                  </select>
+                  <button type="button" className="primary-btn" disabled={!reviewLabel || reviewSaving} onClick={submitReview}>
+                    {reviewSaving ? "Đang lưu..." : "Lưu đánh giá"}
+                  </button>
+                  {detailRecord.actual_label ? <p>Đã duyệt: {detailRecord.actual_label} bởi {detailRecord.reviewed_by}</p> : null}
+                  {reviewError ? <p role="alert">{reviewError}</p> : null}
+                  {isAdmin ? <button type="button" className="secondary-btn" onClick={deleteRecord}>Xóa bản ghi và ảnh</button> : null}
                 </div>
 
                 <div className="top3-list">

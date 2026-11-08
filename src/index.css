@@ -1007,6 +1007,28 @@ p {
   gap: 14px;
 }
 
+.review-form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.review-form label,
+.review-form p {
+  flex-basis: 100%;
+}
+
+.review-form select {
+  min-width: min(100%, 260px);
+  padding: 10px 12px;
+  color: var(--text-primary);
+  background: var(--surface-strong);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+}
+
 .detail-image {
   width: 100%;
   max-height: 340px;

@@ -5,18 +5,18 @@
 This project is a banknote recognition platform with:
 
 - React + Vite frontend (`currency-frontend`)
-- FastAPI backend (`DA_2`)
+- FastAPI backend (`currency-backend`)
 - TensorFlow model inference service (loaded in FastAPI runtime)
-- SQLite database (`currency_ai.db`) for users and prediction history
+- PostgreSQL in production (`currency_ai.db` is development only)
 
 ## Architecture Diagram
 
 ```mermaid
 flowchart LR
     A[Client Browser\nReact Frontend] -->|HTTPS / REST API| B[FastAPI Backend]
-    B --> C[(SQLite DB)]
-    B --> D[TensorFlow Model\nEfficientNetV2B0]
-    B --> E[(Uploaded Images\napi/uploads)]
+    B --> C[(PostgreSQL)]
+    B --> D[TensorFlow Model\nEfficientNetB0]
+    B --> E[(Private S3 images and model artifact)]
 
     F[Admin / Analyst] --> A
 ```
@@ -35,7 +35,7 @@ flowchart LR
 1. User uploads image from Predict page.
 2. Frontend sends multipart file to `/predict`.
 3. Backend validates file type/size, preprocesses image, runs model inference.
-4. Backend stores prediction event into `prediction_history`.
+4. Backend stores the prediction, model version, processing time and private image key in PostgreSQL/S3.
 5. Frontend shows highlighted top prediction, confidence bars, top-3 outputs, suspicious warning if low confidence.
 
 ### Analytics
