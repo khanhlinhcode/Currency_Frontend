@@ -10,6 +10,11 @@ const Login = lazy(() => import("./pages/Login"));
 const ModelInfo = lazy(() => import("./pages/ModelInfo"));
 const Predict = lazy(() => import("./pages/Predict"));
 const Users = lazy(() => import("./pages/Users"));
+const MLOpsRuns = lazy(() => import("./pages/MLOpsRuns"));
+const RunDetail = lazy(() => import("./pages/RunDetail"));
+const CompareModels = lazy(() => import("./pages/CompareModels"));
+const Benchmarks = lazy(() => import("./pages/Benchmarks"));
+const Monitoring = lazy(() => import("./pages/Monitoring"));
 
 function App() {
   return (
@@ -56,6 +61,11 @@ function App() {
                   </ProtectedRoute>
                 }
               />
+              <Route path="/mlops/runs" element={<ProtectedRoute allowedRoles={["admin"]}><MLOpsRuns /></ProtectedRoute>} />
+              <Route path="/mlops/runs/:runId" element={<ProtectedRoute allowedRoles={["admin"]}><RunDetail /></ProtectedRoute>} />
+              <Route path="/mlops/compare" element={<ProtectedRoute allowedRoles={["admin"]}><CompareModels /></ProtectedRoute>} />
+              <Route path="/mlops/benchmarks" element={<ProtectedRoute allowedRoles={["admin"]}><Benchmarks /></ProtectedRoute>} />
+              <Route path="/mlops/monitoring" element={<ProtectedRoute allowedRoles={["admin"]}><Monitoring /></ProtectedRoute>} />
             </Routes>
           </Suspense>
         </Layout>

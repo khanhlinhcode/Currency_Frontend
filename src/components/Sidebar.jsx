@@ -8,6 +8,10 @@ import {
   Layers3,
   LayoutDashboard,
   UsersRound,
+  Activity,
+  GitCompareArrows,
+  ListChecks,
+  Timer,
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
@@ -23,6 +27,10 @@ const protectedLinks = [
 ];
 
 const adminLinks = [
+  { to: "/mlops/runs", label: "MLOps Runs", icon: ListChecks },
+  { to: "/mlops/compare", label: "So sánh model", icon: GitCompareArrows },
+  { to: "/mlops/benchmarks", label: "Benchmark", icon: Timer },
+  { to: "/mlops/monitoring", label: "Monitoring", icon: Activity },
   { to: "/users", label: "Quản lý người dùng", icon: UsersRound },
 ];
 

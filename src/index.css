@@ -735,6 +735,28 @@ p {
   background: rgba(128, 191, 177, 0.11);
 }
 
+.history-table a,
+.chart-panel a {
+  color: #74e3cf;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.mlops-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.mlops-warning {
+  border-color: rgba(248, 179, 103, 0.62);
+  color: #ffe1b9;
+}
+
+.mlops-error {
+  color: #ffb6b6;
+}
+
 .history-mobile-list {
   display: none;
 }
