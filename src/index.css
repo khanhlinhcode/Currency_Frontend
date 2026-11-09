@@ -32,8 +32,13 @@ body,
   min-height: 100%;
 }
 
+html {
+  background-color: var(--bg-1);
+}
+
 body {
   margin: 0;
+  background-color: var(--bg-1);
   font-family: var(--font-body);
   color: var(--text-primary);
   background:

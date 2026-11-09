@@ -33,7 +33,7 @@ export default function RunDetail() {
     <section className="dashboard-grid dashboard-grid--four">
       <article className="panel stat-card"><p>Test accuracy</p><h3>{percent(evaluation.accuracy)}</h3></article>
       <article className="panel stat-card"><p>Macro F1</p><h3>{percent(evaluation.macro_f1)}</h3></article>
-      <article className="panel stat-card"><p>ECE</p><h3>{number(evaluation.ece_10_bins)}</h3></article>
+      <article className="panel stat-card"><p>ECE</p><h3>{typeof evaluation.ece_10_bins === "number" ? evaluation.ece_10_bins.toFixed(4) : "Chưa đủ dữ liệu"}</h3></article>
       <article className="panel stat-card"><p>Accepted coverage</p><h3>{percent(evaluation.accepted_coverage)}</h3></article>
     </section>
     <section className="dashboard-grid dashboard-grid--four">
@@ -50,7 +50,7 @@ export default function RunDetail() {
     </section>
     <section className="panel chart-panel"><div className="panel-title"><h3>Chỉ số từng lớp trên tập test</h3></div>
       {!Object.keys(perClass).length ? <p>Chưa có dữ liệu từng lớp.</p> : <div className="table-wrap"><table className="history-table"><thead><tr><th>Lớp</th><th>Precision</th><th>Recall</th><th>F1</th><th>Số ảnh</th></tr></thead>
-        <tbody>{Object.entries(perClass).map(([label, value]) => <tr key={label}><td>{label}</td><td>{percent(value.precision)}</td><td>{percent(value.recall)}</td><td>{percent(value["f1-score"])}</td><td>{number(value.support)}</td></tr>)}</tbody></table></div>}
+        <tbody>{Object.entries(perClass).map(([label, value]) => <tr key={label}><td>{label}</td><td>{percent(value.precision)}</td><td>{percent(value.recall)}</td><td>{percent(value.f1 ?? value["f1-score"])}</td><td>{number(value.support)}</td></tr>)}</tbody></table></div>}
     </section>
     <section className="panel chart-panel"><div className="panel-title"><h3>Tải báo cáo đã kiểm hash</h3></div>
       <div className="mlops-actions">{reports.filter((name) => name === "run" || artifacts[name]).map((name) =>

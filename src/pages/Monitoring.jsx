@@ -3,6 +3,15 @@ import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YA
 import axios from "../api/axios";
 import { date, number, percent, statusLabel } from "./mlops";
 
+const reasonLabels = {
+  "No verified model baseline or fewer than minimum operational samples": "Chưa có baseline model đã xác minh hoặc số mẫu vận hành chưa đạt ngưỡng.",
+  "API errors or processing p95 exceeded critical threshold": "Lỗi API hoặc độ trễ p95 vượt ngưỡng nghiêm trọng.",
+  "API errors or processing p95 exceeded warning threshold": "Lỗi API hoặc độ trễ p95 vượt ngưỡng cảnh báo.",
+  "Private storage usage unavailable": "Chưa đọc được dung lượng kho riêng tư.",
+  "Private storage usage exceeded warning threshold": "Dung lượng kho riêng tư vượt ngưỡng cảnh báo.",
+  "Model confidence or class mix requires investigation": "Độ tin cậy hoặc phân bố lớp cần được kiểm tra.",
+};
+
 export default function Monitoring() {
   const [current, setCurrent] = useState(null);
   const [history, setHistory] = useState([]);
@@ -46,7 +55,7 @@ export default function Monitoring() {
       <section className="panel chart-panel"><div className="panel-title"><h3>Diễn giải</h3></div>
         <p>Model {current.model_version} · {statusLabel(current.release_status)} · Baseline đã xác minh: {current.baseline_available ? "Có" : "Chưa có"}</p>
         <p>Class mix JS divergence: {number(current.distribution_js_divergence)}</p>
-        {current.reasons?.length ? <ul>{current.reasons.map((reason) => <li key={reason}>{reason}</li>)}</ul> : <p>Chưa có tín hiệu vượt ngưỡng.</p>}
+        {current.reasons?.length ? <ul>{current.reasons.map((reason) => <li key={reason}>{reasonLabels[reason] || reason}</li>)}</ul> : <p>Chưa có tín hiệu vượt ngưỡng.</p>}
       </section>
     </>}
     <section className="panel chart-panel"><div className="panel-title"><h3>Lịch sử snapshot</h3></div>

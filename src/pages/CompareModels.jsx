@@ -31,7 +31,7 @@ export default function CompareModels() {
 
   const [left, right] = leftId && rightId ? details || [] : [];
   const comparable = left && right && left.summary.dataset_version === right.summary.dataset_version
-    && left.artifacts.audit?.dataset_manifest_verified && right.artifacts.audit?.dataset_manifest_verified;
+    && leftId !== rightId && left.artifacts.audit?.dataset_manifest_verified && right.artifacts.audit?.dataset_manifest_verified;
   return <div className="dashboard-page fade-in">
     <section className="hero-panel"><p className="panel-kicker">Model Comparison</p><h2>So sánh hai lần đánh giá</h2>
       <p>Chỉ so sánh chất lượng như cùng một phép đo khi cả hai run dùng cùng dataset đã xác minh. Benchmark cần cùng phần cứng và điều kiện tải.</p></section>
@@ -43,7 +43,7 @@ export default function CompareModels() {
     </div></section>
     {error ? <section className="panel empty-state error">{error}</section> : null}
     {left && right ? <>
-      {!comparable ? <section className="panel mlops-warning">Hai run chưa có cùng dataset v2 được xác minh; không suy ra model nào tốt hơn từ các chỉ số này.</section> : null}
+      {!comparable ? <section className="panel mlops-warning">Chọn hai run khác nhau dùng cùng dataset v2 đã xác minh; các chỉ số hiện tại chưa đủ để kết luận model nào tốt hơn.</section> : null}
       <section className="panel chart-panel"><div className="table-wrap"><table className="history-table"><thead><tr><th>Chỉ số</th><th>{left.summary.model_version} · {statusLabel(left.summary.status)}</th><th>{right.summary.model_version} · {statusLabel(right.summary.status)}</th></tr></thead>
         <tbody><tr><td>Dataset</td><td>{left.summary.dataset_version}</td><td>{right.summary.dataset_version}</td></tr>
           {metrics.map(([label, field, format]) => <tr key={field}><td>{label}</td><td>{format(left.artifacts.evaluation?.[field])}</td><td>{format(right.artifacts.evaluation?.[field])}</td></tr>)}
