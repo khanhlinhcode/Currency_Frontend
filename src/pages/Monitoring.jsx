@@ -10,6 +10,9 @@ const reasonLabels = {
   "Private storage usage unavailable": "Chưa đọc được dung lượng kho riêng tư.",
   "Private storage usage exceeded warning threshold": "Dung lượng kho riêng tư vượt ngưỡng cảnh báo.",
   "Model confidence or class mix requires investigation": "Độ tin cậy hoặc phân bố lớp cần được kiểm tra.",
+  "Device fleet has offline or outdated installations": "Có thiết bị chưa kết nối hoặc chưa cập nhật bản phát hành.",
+  "Device prediction distribution requires investigation": "Phân bố dự đoán trên thiết bị cần được xem xét.",
+  "API serving model has not synchronized with release channel": "API chưa đồng bộ model với kênh phát hành.",
 };
 
 export default function Monitoring() {
@@ -46,6 +49,11 @@ export default function Monitoring() {
         <article className="panel stat-card"><p>API 5xx · 24 giờ</p><h3>{number(current.api_5xx_24h)}</h3></article>
         <article className="panel stat-card"><p>Dung lượng bucket</p><h3>{current.storage_bytes == null ? "Chưa đo được" : number(current.storage_bytes / 1000000, " MB")}</h3></article>
       </section>
+      <section className="panel chart-panel"><div className="panel-title"><h3>Đồng bộ thiết bị</h3></div>
+        <p>Kênh phát hành: {current.channel_active_run_id || "Chưa có bản được duyệt"} · Thiết bị đang hoạt động: {number(current.device_total)} · Chưa cập nhật: {number(current.device_outdated)} · Mất kết nối: {number(current.device_offline)}</p>
+        <p>Drift thiết bị: {statusLabel(current.device_quality?.status)} · Mẫu: {number(current.device_quality?.sample_size)} / {number(current.thresholds?.minimum_model_samples)} · Confidence thấp: {percent(current.device_quality?.low_confidence_rate)} · JS divergence: {number(current.device_quality?.distribution_js_divergence)}</p>
+        <p>Độ đúng đã duyệt trên thiết bị: {percent(current.device_quality?.reviewed_accuracy)} · Số lượt duyệt: {number(current.device_quality?.reviewed_count)} / {number(current.thresholds?.minimum_reviewed_samples)}</p>
+      </section>
       <section className="dashboard-grid dashboard-grid--four">
         <article className="panel stat-card"><p>Xử lý p95 / p99</p><h3>{number(current.processing_p95_ms, " ms")}</h3><p>p99: {number(current.processing_p99_ms, " ms")}</p></article>
         <article className="panel stat-card"><p>Inference p95 / p99</p><h3>{number(current.inference_p95_ms, " ms")}</h3><p>p99: {number(current.inference_p99_ms, " ms")}</p></article>
@@ -53,7 +61,8 @@ export default function Monitoring() {
         <article className="panel stat-card"><p>Độ đúng đã duyệt</p><h3>{percent(current.reviewed_accuracy)}</h3><p>{number(current.reviewed_count)} / {number(current.thresholds?.minimum_reviewed_samples)} bản ghi tối thiểu</p></article>
       </section>
       <section className="panel chart-panel"><div className="panel-title"><h3>Diễn giải</h3></div>
-        <p>Model {current.model_version} · {statusLabel(current.release_status)} · Baseline đã xác minh: {current.baseline_available ? "Có" : "Chưa có"}</p>
+        <p>Model API {current.model_version} · run {current.serving_run_id || "bootstrap"} · {statusLabel(current.release_status)} · Baseline đã xác minh: {current.baseline_available ? "Có" : "Chưa có"}</p>
+        {current.serving_update_error && <p>Lỗi đồng bộ model API: {current.serving_update_error}</p>}
         <p>Class mix JS divergence: {number(current.distribution_js_divergence)}</p>
         {current.reasons?.length ? <ul>{current.reasons.map((reason) => <li key={reason}>{reasonLabels[reason] || reason}</li>)}</ul> : <p>Chưa có tín hiệu vượt ngưỡng.</p>}
       </section>

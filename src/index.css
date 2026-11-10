@@ -753,6 +753,23 @@ p {
   gap: 10px;
 }
 
+.mlops-actions input {
+  min-width: min(100%, 280px);
+}
+
+.mlops-secret {
+  overflow-wrap: anywhere;
+}
+
+.mlops-evidence {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  max-height: 420px;
+  margin-bottom: 12px;
+  object-fit: contain;
+}
+
 .mlops-warning {
   border-color: rgba(248, 179, 103, 0.62);
   color: #ffe1b9;

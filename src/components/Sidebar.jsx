@@ -12,6 +12,7 @@ import {
   GitCompareArrows,
   ListChecks,
   Timer,
+  RadioTower,
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
@@ -31,6 +32,7 @@ const adminLinks = [
   { to: "/mlops/compare", label: "So sánh model", icon: GitCompareArrows },
   { to: "/mlops/benchmarks", label: "Benchmark", icon: Timer },
   { to: "/mlops/monitoring", label: "Monitoring", icon: Activity },
+  { to: "/mlops/releases", label: "Phát hành & thiết bị", icon: RadioTower },
   { to: "/users", label: "Quản lý người dùng", icon: UsersRound },
 ];
 
