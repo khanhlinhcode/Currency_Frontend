@@ -24,7 +24,7 @@ function App() {
         <Layout>
           <Suspense fallback={<div className="panel empty-state">Đang tải trang...</div>}>
             <Routes>
-              <Route path="/" element={import.meta.env.VITE_APP_ENV === "staging" ? <ProtectedRoute><Predict /></ProtectedRoute> : <Predict />} />
+              <Route path="/" element={<Predict />} />
               <Route path="/login" element={<Login />} />
 
               <Route

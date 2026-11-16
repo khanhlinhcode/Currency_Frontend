@@ -70,6 +70,31 @@ function dataUrlToFile(dataUrl, fileName) {
   return new File([bytes], fileName, { type: mime });
 }
 
+async function prepareDemoUpload(file) {
+  if (import.meta.env.VITE_APP_ENV !== "staging" || file.size < 250_000) {
+    return file;
+  }
+
+  const bitmap = await createImageBitmap(file);
+  try {
+    const scale = Math.min(1, 1024 / Math.max(bitmap.width, bitmap.height));
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.max(1, Math.round(bitmap.width * scale));
+    canvas.height = Math.max(1, Math.round(bitmap.height * scale));
+    canvas.getContext("2d").drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+
+    const compressed = await new Promise((resolve) => canvas.toBlob(resolve, "image/jpeg", 0.82));
+    if (!compressed || compressed.size >= file.size) {
+      return file;
+    }
+    return new File([compressed], file.name.replace(/\.[^.]+$/, "") + ".jpg", {
+      type: "image/jpeg",
+    });
+  } finally {
+    bitmap.close();
+  }
+}
+
 export default function Predict() {
   const webcamRef = useRef(null);
 
@@ -99,10 +124,15 @@ export default function Predict() {
     setError("");
     setIsPredicting(true);
 
-    const formData = new FormData();
-    formData.append("file", inputFile);
-
     try {
+      let uploadFile = inputFile;
+      try {
+        uploadFile = await prepareDemoUpload(inputFile);
+      } catch {
+        // Browsers without canvas encoding can still submit the original image.
+      }
+      const formData = new FormData();
+      formData.append("file", uploadFile);
       const res = await api.post("/predict", formData);
       setResult(res.data);
       window.dispatchEvent(new CustomEvent("prediction-created"));
@@ -208,6 +238,12 @@ export default function Predict() {
           Nạp ảnh từ kéo-thả hoặc camera trực tiếp. Hệ thống sẽ tự chạy nhận diện
           và trả về dự đoán chính, confidence và top-3 lớp.
         </p>
+        {import.meta.env.VITE_APP_ENV === "staging" ? (
+          <p>
+            Khách xem demo có thể thử ngay mà không cần tài khoản. Ảnh và kết quả
+            dự đoán của khách không được lưu vào lịch sử hệ thống.
+          </p>
+        ) : null}
       </section>
 
       <section className="predict-grid">

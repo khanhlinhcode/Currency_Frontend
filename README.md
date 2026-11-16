@@ -1,104 +1,32 @@
-# Currency Frontend
+# Currency AI frontend
 
-🌐 FRONTEND – HỆ THỐNG NHẬN DIỆN TIỀN GIẤY
+React/Vite dashboard cho hệ thống nhận dạng **mệnh giá** tiền giấy. [Staging](https://currency-ai-free-dashboard.onrender.com/) chạy trên Render Static Sites và gọi [Currency AI API staging](https://currency-ai-free-staging.onrender.com/ready). Model hiện tại là `1.1.0` dạng **candidate**; giao diện không được dùng để tuyên bố model đã đạt chất lượng production.
 
-⸻
+## Trang và phân quyền
 
-📌 Giới thiệu
+- Khách xem staging: vào trang nhận diện và thử ảnh ngay, không cần đăng nhập; ảnh/kết quả demo không được lưu vào lịch sử.
+- Người dùng đã đăng nhập: dự đoán ảnh, lịch sử, dashboard vận hành và thông tin model.
+- Admin: quản lý tài khoản, **MLOps Runs**, Run Detail, Compare Models, Benchmark, Monitoring và **Phát hành & thiết bị**.
+- Test-set metrics, reviewed accuracy và benchmark latency là ba loại số liệu khác nhau. Khi thiếu baseline hoặc chưa đủ mẫu, giao diện hiển thị **“Chưa đủ dữ liệu”**. Kích hoạt/rollback chỉ nhận run đã được backend phê duyệt; dashboard không thể vượt release gate.
 
-Frontend được xây dựng bằng ReactJS, đóng vai trò giao diện người dùng trong hệ thống nhận diện tiền giấy.
-Ứng dụng cho phép người dùng tải ảnh hoặc sử dụng camera để gửi dữ liệu đến backend và hiển thị kết quả dự đoán từ mô hình AI.
+Staging cho khách dự đoán tối đa 30 lượt mỗi phút trên một API instance, không ghi ảnh hay lịch sử của khách; các trang dữ liệu và quản trị vẫn yêu cầu đăng nhập. Admin có thể đổi model đã được duyệt và rollback trên trang phát hành mà không sửa code. **Train lại, duyệt dữ liệu và tạo approved run vẫn cần quy trình backend**, chưa có nút train tự động trong frontend. Xem [backend README](https://github.com/khanhlinhcode/Currency_Backend/blob/main/README.md) và [release-control runbook](https://github.com/khanhlinhcode/Currency_Backend/blob/main/docs/release-control-runbook.md).
 
-⸻
-
-🧠 Công nghệ sử dụng
-• ReactJS
-• Vite
-• Axios
-• HTML / CSS / SCSS
-
-⸻
-
-📂 Cấu trúc thư mục
-currency-frontend/
-│
-├── src/
-│ ├── components/ # UI components
-│ ├── pages/ # các trang chính (Predict, History, Dashboard)
-│ ├── services/ # gọi API (Axios)
-│ └── App.jsx
-│
-├── public/
-├── package.json
-└── vite.config.js
-
-🚀 Cài đặt & chạy Frontend
-
-1️⃣ Di chuyển vào thư mục
-
-cd currency-frontend
-
-2️⃣ Cài thư viện
-
-npm install
-
-3️⃣ Chạy ứng dụng
-
-npm run dev
-
-4️⃣ Truy cập ứng dụng
-http://localhost:5173
-
-🔗 Kết nối Backend
-
-Frontend gửi request đến backend FastAPI thông qua Axios.
-
-👉 URL mặc định: http://127.0.0.1:8000
-
-User → Upload ảnh
-↓
-Frontend (React)
-↓
-Gửi API (Axios)
-↓
-Backend (FastAPI + AI)
-↓
-Nhận JSON
-↓
-Hiển thị kết quả
-
-## Run (Local)
+## Chạy cục bộ
 
 ```bash
-nvm use
-npm install
+npm ci
 npm run dev
 ```
 
-`nvm run dev` is not valid for Vite projects. Use `npm run dev`.
-
-## Build
+Mặc định API development ở `http://127.0.0.1:8000`. Để dùng API khác, đặt `VITE_API_URL` trước khi **build**; URL này là thông tin công khai trong bundle, không chứa secret. Đặt `VITE_APP_ENV=staging` để hiển thị hướng dẫn demo trên trang dự đoán.
 
 ```bash
 npm run lint
 npm run build
 ```
 
-## API URL
+Các biến môi trường được nhúng vào bản build Vite; đổi API URL cần build/deploy lại frontend. Model được phát hành qua backend release channel, không cần build lại frontend nếu hợp đồng input/lớp tương thích.
 
-Frontend uses:
+## Trạng thái và giới hạn (11/11/2026)
 
-- `http://127.0.0.1:8000` in development, or `VITE_API_URL` at build time.
-
-Configure the production API URL in Vercel environment variables. Admin credentials are provisioned only through backend environment variables.
-
-## Added Features
-
-- Predict page with drag-drop upload, preview, loading state, top-3 confidence bars, suspicious warning.
-- History page with search, filters, pagination, detail modal, CSV/PDF export.
-- Dashboard with summary cards and analytics charts (pie/bar/line).
-- Role-based route protection (`admin` / `analyst`) and session status indicator.
-- Model Info page with architecture, dataset, classes, and training metadata.
-- Deployment docs and configs: Vercel, Render, Railway.
-
-# Currency_Frontend
+Frontend staging và CI đã hoạt động. Dữ liệu backend còn 10.106 ảnh thiếu `group_id` có căn cứ; chưa có dataset v2 được chốt và model được duyệt. Các trang MLOps vì vậy là công cụ theo dõi và kiểm soát phát hành, **chưa chứng minh accuracy production**. Hiệu năng đo trên Render Free và giới hạn backup/thiết bị được ghi trong [báo cáo backend](https://github.com/khanhlinhcode/Currency_Backend/blob/main/docs/validation-report.md).
