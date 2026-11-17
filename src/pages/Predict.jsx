@@ -15,6 +15,7 @@ import {
   X,
 } from "lucide-react";
 import api from "../api/axios";
+import { DEMO_ONLY } from "../demoMode";
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024;
 const ACCEPTED_MIME = {
@@ -355,7 +356,7 @@ export default function Predict() {
             <li>Upload: kéo-thả hoặc click chọn ảnh, hệ thống tự nhận diện ngay.</li>
             <li>Camera: mở camera, căn chỉnh khung hình rồi Capture & Predict.</li>
             <li>Đặt tờ tiền trên nền phẳng, đủ sáng để tăng độ chính xác.</li>
-            <li>Dùng dashboard để theo dõi xu hướng nghi vấn theo thời gian.</li>
+            {!DEMO_ONLY && <li>Dùng dashboard để theo dõi xu hướng nghi vấn theo thời gian.</li>}
           </ul>
         </article>
       </section>

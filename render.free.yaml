@@ -8,6 +8,8 @@ services:
     envVars:
       - key: VITE_APP_ENV
         value: staging
+      - key: VITE_DEMO_ONLY
+        value: 'true'
       - key: VITE_API_URL
         sync: false
     routes:

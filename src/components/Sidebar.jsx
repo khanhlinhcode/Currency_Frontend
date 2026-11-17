@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
+import { DEMO_ONLY } from "../demoMode";
 
 const commonLinks = [
   { to: "/", label: "Nhận diện", icon: Camera, end: true },
@@ -41,8 +42,8 @@ export default function Sidebar({ mobileNavOpen, onNavigate }) {
 
   const navigation = [
     ...commonLinks,
-    ...(token ? protectedLinks : []),
-    ...(token && role === "admin" ? adminLinks : []),
+    ...(!DEMO_ONLY && token ? protectedLinks : []),
+    ...(!DEMO_ONLY && token && role === "admin" ? adminLinks : []),
   ];
 
   return (

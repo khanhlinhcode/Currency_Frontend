@@ -1,6 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 import { createContext, useCallback, useEffect, useMemo, useState } from "react";
 import api from "../api/axios";
+import { DEMO_ONLY } from "../demoMode";
 
 const TOKEN_KEY = "token";
 const USER_KEY = "auth_user";
@@ -24,8 +25,8 @@ function clearAuthStorage() {
 export const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
-  const [token, setToken] = useState(localStorage.getItem(TOKEN_KEY));
-  const [user, setUser] = useState(readStoredUser());
+  const [token, setToken] = useState(DEMO_ONLY ? null : localStorage.getItem(TOKEN_KEY));
+  const [user, setUser] = useState(DEMO_ONLY ? null : readStoredUser());
   const [sessionReady, setSessionReady] = useState(false);
 
   const login = useCallback((payload) => {
@@ -61,6 +62,10 @@ export function AuthProvider({ children }) {
   }, []);
 
   const refreshProfile = useCallback(async () => {
+    if (DEMO_ONLY) {
+      setSessionReady(true);
+      return;
+    }
     if (!localStorage.getItem(TOKEN_KEY)) {
       setSessionReady(true);
       return;

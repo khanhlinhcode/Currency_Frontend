@@ -2,6 +2,7 @@ import { useContext } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { LogIn, LogOut, Menu, ShieldCheck } from "lucide-react";
 import { AuthContext } from "../context/AuthContext";
+import { DEMO_ONLY } from "../demoMode";
 
 const titleMap = {
   "/": "Nhận diện tiền giấy đa quốc gia",
@@ -46,10 +47,10 @@ export default function Navbar({ onToggleSidebar }) {
       <div className="topbar__right">
         <div className="topbar__status">
           <ShieldCheck size={16} />
-          <span>{getSessionLabel(user, token)}</span>
+          <span>{DEMO_ONLY ? "Demo mở · không cần đăng nhập" : getSessionLabel(user, token)}</span>
         </div>
 
-        {token ? (
+        {DEMO_ONLY ? null : token ? (
           <button type="button" className="topbar__action-btn" onClick={logout}>
             <LogOut size={16} />
             <span>Logout</span>
