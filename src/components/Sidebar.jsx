@@ -76,7 +76,7 @@ export default function Sidebar({ mobileNavOpen, onNavigate }) {
 
       <div className="sidebar__meta">
         <span><Globe2 size={15} aria-hidden="true" />3 quốc gia</span>
-        <span><Layers3 size={15} aria-hidden="true" />25 lớp nhận diện</span>
+        <span><Layers3 size={15} aria-hidden="true" />25 lớp phân loại</span>
       </div>
 
       <nav className="sidebar__nav">

@@ -147,7 +147,7 @@ export default function Predict() {
       setError(
         typeof message === "string"
           ? message
-          : "Không thể nhận diện ảnh. Hãy kiểm tra API backend.",
+          : "Dịch vụ nhận diện tạm thời chưa phản hồi. Vui lòng thử lại sau ít phút.",
       );
     } finally {
       setIsPredicting(false);
@@ -240,7 +240,7 @@ export default function Predict() {
       <section className="hero-panel predict-hero">
         <div className="predict-hero__copy">
           <h2>Nhận diện tiền giấy từ một tấm ảnh.</h2>
-          <p>Chọn ảnh hoặc dùng camera để xem dự đoán, mức tin cậy và ba lớp gần nhất. Demo hỗ trợ 25 lớp tiền giấy tại 3 quốc gia.</p>
+          <p>Chọn ảnh hoặc dùng camera để xem dự đoán, mức tin cậy và ba lớp gần nhất. Demo phân loại 25 nhãn ảnh liên quan đến tiền giấy tại 3 quốc gia.</p>
           {DEMO_ONLY && <div className="predict-hero__actions">
             <a href="#thu-nhan-dien" className="primary-btn">Thử nhận diện <ArrowRight size={17} aria-hidden="true" /></a>
             <Link to="/dashboard" className="hero-text-link"><BarChart3 size={18} aria-hidden="true" />Xem biểu đồ & MLOps</Link>
@@ -248,8 +248,8 @@ export default function Predict() {
         </div>
         <div className="predict-hero__facts" aria-label="Phạm vi demo">
           <div><strong>03</strong><span>quốc gia</span></div>
-          <div><strong>25</strong><span>lớp nhận diện</span></div>
-          <div><strong>v1.1</strong><span>model candidate</span></div>
+          <div><strong>25</strong><span>lớp phân loại</span></div>
+          <div><strong>v1.1.0</strong><span>model candidate</span></div>
         </div>
       </section>
 
