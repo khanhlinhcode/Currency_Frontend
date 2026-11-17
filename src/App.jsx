@@ -1,5 +1,5 @@
 import { lazy, Suspense } from "react";
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Layout from "./components/Layout";
 import { AuthProvider } from "./context/AuthContext";
@@ -17,6 +17,7 @@ const CompareModels = lazy(() => import("./pages/CompareModels"));
 const Benchmarks = lazy(() => import("./pages/Benchmarks"));
 const Monitoring = lazy(() => import("./pages/Monitoring"));
 const Releases = lazy(() => import("./pages/Releases"));
+const DemoWorkspace = lazy(() => import("./pages/DemoWorkspace"));
 
 function App() {
   return (
@@ -27,7 +28,7 @@ function App() {
             <Routes>
               <Route path="/" element={<Predict />} />
               {DEMO_ONLY ? (
-                <Route path="*" element={<Navigate to="/" replace />} />
+                <Route path="*" element={<DemoWorkspace />} />
               ) : (
                 <>
                   <Route path="/login" element={<Login />} />

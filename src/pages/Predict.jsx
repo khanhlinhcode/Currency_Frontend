@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import api from "../api/axios";
 import { DEMO_ONLY } from "../demoMode";
+import { rememberDemoPrediction } from "../demoHistory";
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024;
 const ACCEPTED_MIME = {
@@ -136,6 +137,7 @@ export default function Predict() {
       formData.append("file", uploadFile);
       const res = await api.post("/predict", formData);
       setResult(res.data);
+      if (DEMO_ONLY) rememberDemoPrediction(res.data);
       window.dispatchEvent(new CustomEvent("prediction-created"));
     } catch (requestError) {
       const message = requestError.response?.data?.detail;
@@ -356,7 +358,7 @@ export default function Predict() {
             <li>Upload: kéo-thả hoặc click chọn ảnh, hệ thống tự nhận diện ngay.</li>
             <li>Camera: mở camera, căn chỉnh khung hình rồi Capture & Predict.</li>
             <li>Đặt tờ tiền trên nền phẳng, đủ sáng để tăng độ chính xác.</li>
-            {!DEMO_ONLY && <li>Dùng dashboard để theo dõi xu hướng nghi vấn theo thời gian.</li>}
+            <li>Dùng dashboard để xem biểu đồ model và bằng chứng benchmark đã lưu.</li>
           </ul>
         </article>
       </section>

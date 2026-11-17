@@ -10,6 +10,11 @@ const titleMap = {
   "/dashboard": "Dashboard rủi ro và vận hành",
   "/model-info": "Model Info & Training Metadata",
   "/users": "Quản lý tài khoản đăng nhập hệ thống",
+  "/mlops/runs": "Hồ sơ MLOps",
+  "/mlops/compare": "So sánh model",
+  "/mlops/benchmarks": "Benchmark",
+  "/mlops/monitoring": "Monitoring",
+  "/mlops/releases": "Phát hành và thiết bị",
 };
 
 function getSessionLabel(user, token) {
@@ -24,7 +29,7 @@ function getSessionLabel(user, token) {
 export default function Navbar({ onToggleSidebar }) {
   const location = useLocation();
   const { token, user, logout } = useContext(AuthContext);
-  const title = titleMap[location.pathname] || "Banknote Recognition Suite";
+  const title = titleMap[location.pathname] || (location.pathname.startsWith("/mlops/runs/") ? "Chi tiết MLOps run" : "Banknote Recognition Suite");
 
   return (
     <header className="topbar">

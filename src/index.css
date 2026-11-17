@@ -1317,6 +1317,7 @@ p {
     top: 0;
     bottom: 0;
     left: 0;
+    overflow-y: auto;
     transform: translateX(-104%);
     transition: transform 0.24s ease;
     width: min(84vw, 320px);
@@ -1400,4 +1401,8 @@ p {
   .chart-panel--full {
     grid-column: auto;
   }
+}
+.demo-source-note {
+  margin-top: 20px;
+  line-height: 1.6;
 }

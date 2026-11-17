@@ -37,13 +37,19 @@ const adminLinks = [
   { to: "/users", label: "Quản lý người dùng", icon: UsersRound },
 ];
 
+const demoLinks = [
+  ...commonLinks,
+  ...protectedLinks,
+  ...adminLinks.map((item) => item.to === "/users" ? { ...item, label: "Phân quyền" } : item),
+];
+
 export default function Sidebar({ mobileNavOpen, onNavigate }) {
   const { token, role } = useContext(AuthContext);
 
-  const navigation = [
+  const navigation = DEMO_ONLY ? demoLinks : [
     ...commonLinks,
-    ...(!DEMO_ONLY && token ? protectedLinks : []),
-    ...(!DEMO_ONLY && token && role === "admin" ? adminLinks : []),
+    ...(token ? protectedLinks : []),
+    ...(token && role === "admin" ? adminLinks : []),
   ];
 
   return (

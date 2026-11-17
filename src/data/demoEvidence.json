@@ -1,0 +1,737 @@
+{
+  "source_note": "Báo cáo chẩn đoán đã lưu trong repository backend; không phải thống kê thời gian thực.",
+  "sources": {
+    "manifest": "models/edge-manifest.json",
+    "runs": "results/runs/<run-id>/{run,audit,evaluation,benchmark}.json",
+    "benchmarks": "docs/evidence/20261110-free-cloud-c{1,4,8}.json",
+    "monitoring": "docs/evidence/2026-11-10-scheduled-monitor.json và 2026-11-11-manual-staging-monitor.json"
+  },
+  "manifest": {
+    "version": "1.1.0",
+    "release_status": "candidate",
+    "architecture": "EfficientNetB0",
+    "framework": "ONNX Runtime 1.23.2 (converted from TensorFlow 2.16.2)",
+    "dataset_version": "legacy-unversioned",
+    "input_size": [
+      224,
+      224
+    ],
+    "confidence_threshold": 0.6,
+    "class_names": [
+      "INR_10",
+      "INR_100",
+      "INR_20",
+      "INR_200",
+      "INR_2000",
+      "INR_50",
+      "INR_500",
+      "USA_1 Dollar",
+      "USA_10 Dollar",
+      "USA_100 Dollar",
+      "USA_2 Dollar",
+      "USA_5 Dollar",
+      "USA_50 Dollar",
+      "VN_000000",
+      "VN_000200",
+      "VN_000500",
+      "VN_001000",
+      "VN_002000",
+      "VN_005000",
+      "VN_010000",
+      "VN_020000",
+      "VN_050000",
+      "VN_100000",
+      "VN_200000",
+      "VN_500000"
+    ],
+    "test_metrics": null
+  },
+  "runs": [
+    {
+      "run_id": "20261107T071826Z-70bd35a8",
+      "status": "diagnostic",
+      "recorded_at": "2026-11-07T07:18:26.834462+00:00",
+      "model_version": "1.1.0",
+      "dataset_version": "a4d58e1ef81b055e1a97a6e7fb13f6e082818b1c36810e7e0753c2340cc28c8b",
+      "group_split_verified": false,
+      "accuracy": 0.962915,
+      "macro_f1": 0.959396,
+      "ece_10_bins": 0.022638,
+      "accepted_coverage": 0.957059,
+      "accepted_accuracy": 0.978246,
+      "inference_p95_ms": 93.47,
+      "evaluation": {
+        "test_samples": 1537,
+        "accuracy": 0.962915,
+        "macro_f1": 0.959396,
+        "ece_10_bins": 0.022638,
+        "accepted_coverage": 0.957059,
+        "accepted_accuracy": 0.978246,
+        "per_class": {
+          "INR_10": {
+            "precision": 0.8888888888888888,
+            "recall": 0.8533333333333334,
+            "f1-score": 0.8707482993197279,
+            "support": 75.0
+          },
+          "INR_100": {
+            "precision": 0.9565217391304348,
+            "recall": 0.88,
+            "f1-score": 0.9166666666666666,
+            "support": 75.0
+          },
+          "INR_20": {
+            "precision": 0.9090909090909091,
+            "recall": 0.9333333333333333,
+            "f1-score": 0.9210526315789473,
+            "support": 75.0
+          },
+          "INR_200": {
+            "precision": 0.9534883720930233,
+            "recall": 0.9879518072289156,
+            "f1-score": 0.9704142011834319,
+            "support": 83.0
+          },
+          "INR_2000": {
+            "precision": 0.9864864864864865,
+            "recall": 1.0,
+            "f1-score": 0.9931972789115646,
+            "support": 73.0
+          },
+          "INR_50": {
+            "precision": 0.8987341772151899,
+            "recall": 0.9466666666666667,
+            "f1-score": 0.922077922077922,
+            "support": 75.0
+          },
+          "INR_500": {
+            "precision": 1.0,
+            "recall": 0.958904109589041,
+            "f1-score": 0.9790209790209791,
+            "support": 73.0
+          },
+          "USA_1 Dollar": {
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1-score": 1.0,
+            "support": 92.0
+          },
+          "USA_10 Dollar": {
+            "precision": 0.9830508474576272,
+            "recall": 1.0,
+            "f1-score": 0.9914529914529915,
+            "support": 116.0
+          },
+          "USA_100 Dollar": {
+            "precision": 0.9893617021276596,
+            "recall": 0.9893617021276596,
+            "f1-score": 0.9893617021276596,
+            "support": 94.0
+          },
+          "USA_2 Dollar": {
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1-score": 1.0,
+            "support": 94.0
+          },
+          "USA_5 Dollar": {
+            "precision": 0.9587628865979382,
+            "recall": 0.9893617021276596,
+            "f1-score": 0.9738219895287958,
+            "support": 94.0
+          },
+          "USA_50 Dollar": {
+            "precision": 0.99,
+            "recall": 0.9519230769230769,
+            "f1-score": 0.9705882352941176,
+            "support": 104.0
+          },
+          "VN_000000": {
+            "precision": 0.9487179487179487,
+            "recall": 0.9736842105263158,
+            "f1-score": 0.961038961038961,
+            "support": 38.0
+          },
+          "VN_000200": {
+            "precision": 1.0,
+            "recall": 0.9473684210526315,
+            "f1-score": 0.972972972972973,
+            "support": 38.0
+          },
+          "VN_000500": {
+            "precision": 0.95,
+            "recall": 1.0,
+            "f1-score": 0.9743589743589743,
+            "support": 38.0
+          },
+          "VN_001000": {
+            "precision": 1.0,
+            "recall": 0.9210526315789473,
+            "f1-score": 0.958904109589041,
+            "support": 38.0
+          },
+          "VN_002000": {
+            "precision": 0.925,
+            "recall": 0.9736842105263158,
+            "f1-score": 0.9487179487179487,
+            "support": 38.0
+          },
+          "VN_005000": {
+            "precision": 1.0,
+            "recall": 0.9166666666666666,
+            "f1-score": 0.9565217391304348,
+            "support": 24.0
+          },
+          "VN_010000": {
+            "precision": 1.0,
+            "recall": 0.8947368421052632,
+            "f1-score": 0.9444444444444444,
+            "support": 38.0
+          },
+          "VN_020000": {
+            "precision": 0.9166666666666666,
+            "recall": 0.9166666666666666,
+            "f1-score": 0.9166666666666666,
+            "support": 24.0
+          },
+          "VN_050000": {
+            "precision": 0.96,
+            "recall": 1.0,
+            "f1-score": 0.9795918367346939,
+            "support": 24.0
+          },
+          "VN_100000": {
+            "precision": 1.0,
+            "recall": 0.9473684210526315,
+            "f1-score": 0.972972972972973,
+            "support": 38.0
+          },
+          "VN_200000": {
+            "precision": 0.8837209302325582,
+            "recall": 1.0,
+            "f1-score": 0.9382716049382716,
+            "support": 38.0
+          },
+          "VN_500000": {
+            "precision": 0.926829268292683,
+            "recall": 1.0,
+            "f1-score": 0.9620253164556962,
+            "support": 38.0
+          }
+        }
+      },
+      "audit": {
+        "group_split_verified": false,
+        "exact_cross_split_duplicates": 182,
+        "conflicting_label_groups": 2,
+        "counts": {
+          "train": {
+            "INR_10": 345,
+            "INR_100": 346,
+            "INR_20": 346,
+            "INR_200": 381,
+            "INR_2000": 338,
+            "INR_50": 346,
+            "INR_500": 337,
+            "USA_1 Dollar": 423,
+            "USA_10 Dollar": 534,
+            "USA_100 Dollar": 432,
+            "USA_2 Dollar": 431,
+            "USA_5 Dollar": 431,
+            "USA_50 Dollar": 479,
+            "VN_000000": 175,
+            "VN_000200": 175,
+            "VN_000500": 175,
+            "VN_001000": 175,
+            "VN_002000": 175,
+            "VN_005000": 107,
+            "VN_010000": 175,
+            "VN_020000": 107,
+            "VN_050000": 107,
+            "VN_100000": 175,
+            "VN_200000": 175,
+            "VN_500000": 175
+          },
+          "val": {
+            "INR_10": 73,
+            "INR_100": 74,
+            "INR_20": 74,
+            "INR_200": 81,
+            "INR_2000": 72,
+            "INR_50": 74,
+            "INR_500": 72,
+            "USA_1 Dollar": 90,
+            "USA_10 Dollar": 114,
+            "USA_100 Dollar": 92,
+            "USA_2 Dollar": 92,
+            "USA_5 Dollar": 92,
+            "USA_50 Dollar": 102,
+            "VN_000000": 37,
+            "VN_000200": 37,
+            "VN_000500": 37,
+            "VN_001000": 37,
+            "VN_002000": 37,
+            "VN_005000": 23,
+            "VN_010000": 37,
+            "VN_020000": 23,
+            "VN_050000": 23,
+            "VN_100000": 37,
+            "VN_200000": 37,
+            "VN_500000": 37
+          },
+          "test": {
+            "INR_10": 75,
+            "INR_100": 75,
+            "INR_20": 75,
+            "INR_200": 83,
+            "INR_2000": 73,
+            "INR_50": 75,
+            "INR_500": 73,
+            "USA_1 Dollar": 92,
+            "USA_10 Dollar": 116,
+            "USA_100 Dollar": 94,
+            "USA_2 Dollar": 94,
+            "USA_5 Dollar": 94,
+            "USA_50 Dollar": 104,
+            "VN_000000": 38,
+            "VN_000200": 38,
+            "VN_000500": 38,
+            "VN_001000": 38,
+            "VN_002000": 38,
+            "VN_005000": 24,
+            "VN_010000": 38,
+            "VN_020000": 24,
+            "VN_050000": 24,
+            "VN_100000": 38,
+            "VN_200000": 38,
+            "VN_500000": 38
+          }
+        }
+      },
+      "benchmark": {
+        "runs": 30,
+        "mean_ms": 52.53,
+        "p50_ms": 45.49,
+        "p95_ms": 93.47,
+        "p99_ms": 101.83
+      }
+    },
+    {
+      "run_id": "20261108T063700Z-onnx-diagnostic",
+      "status": "diagnostic",
+      "recorded_at": "2026-11-08T06:37:09.078665+00:00",
+      "model_version": "1.1.0",
+      "dataset_version": "a4d58e1ef81b055e1a97a6e7fb13f6e082818b1c36810e7e0753c2340cc28c8b",
+      "group_split_verified": false,
+      "accuracy": 0.962915,
+      "macro_f1": 0.959396,
+      "ece_10_bins": 0.022638,
+      "accepted_coverage": 0.957059,
+      "accepted_accuracy": 0.978246,
+      "inference_p95_ms": 41.31,
+      "evaluation": {
+        "test_samples": 1537,
+        "accuracy": 0.962915,
+        "macro_f1": 0.959396,
+        "ece_10_bins": 0.022638,
+        "accepted_coverage": 0.957059,
+        "accepted_accuracy": 0.978246,
+        "per_class": {
+          "INR_10": {
+            "support": 75,
+            "precision": 0.888889,
+            "recall": 0.853333,
+            "f1": 0.870748
+          },
+          "INR_100": {
+            "support": 75,
+            "precision": 0.956522,
+            "recall": 0.88,
+            "f1": 0.916667
+          },
+          "INR_20": {
+            "support": 75,
+            "precision": 0.909091,
+            "recall": 0.933333,
+            "f1": 0.921053
+          },
+          "INR_200": {
+            "support": 83,
+            "precision": 0.953488,
+            "recall": 0.987952,
+            "f1": 0.970414
+          },
+          "INR_2000": {
+            "support": 73,
+            "precision": 0.986486,
+            "recall": 1.0,
+            "f1": 0.993197
+          },
+          "INR_50": {
+            "support": 75,
+            "precision": 0.898734,
+            "recall": 0.946667,
+            "f1": 0.922078
+          },
+          "INR_500": {
+            "support": 73,
+            "precision": 1.0,
+            "recall": 0.958904,
+            "f1": 0.979021
+          },
+          "USA_1 Dollar": {
+            "support": 92,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0
+          },
+          "USA_10 Dollar": {
+            "support": 116,
+            "precision": 0.983051,
+            "recall": 1.0,
+            "f1": 0.991453
+          },
+          "USA_100 Dollar": {
+            "support": 94,
+            "precision": 0.989362,
+            "recall": 0.989362,
+            "f1": 0.989362
+          },
+          "USA_2 Dollar": {
+            "support": 94,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0
+          },
+          "USA_5 Dollar": {
+            "support": 94,
+            "precision": 0.958763,
+            "recall": 0.989362,
+            "f1": 0.973822
+          },
+          "USA_50 Dollar": {
+            "support": 104,
+            "precision": 0.99,
+            "recall": 0.951923,
+            "f1": 0.970588
+          },
+          "VN_000000": {
+            "support": 38,
+            "precision": 0.948718,
+            "recall": 0.973684,
+            "f1": 0.961039
+          },
+          "VN_000200": {
+            "support": 38,
+            "precision": 1.0,
+            "recall": 0.947368,
+            "f1": 0.972973
+          },
+          "VN_000500": {
+            "support": 38,
+            "precision": 0.95,
+            "recall": 1.0,
+            "f1": 0.974359
+          },
+          "VN_001000": {
+            "support": 38,
+            "precision": 1.0,
+            "recall": 0.921053,
+            "f1": 0.958904
+          },
+          "VN_002000": {
+            "support": 38,
+            "precision": 0.925,
+            "recall": 0.973684,
+            "f1": 0.948718
+          },
+          "VN_005000": {
+            "support": 24,
+            "precision": 1.0,
+            "recall": 0.916667,
+            "f1": 0.956522
+          },
+          "VN_010000": {
+            "support": 38,
+            "precision": 1.0,
+            "recall": 0.894737,
+            "f1": 0.944444
+          },
+          "VN_020000": {
+            "support": 24,
+            "precision": 0.916667,
+            "recall": 0.916667,
+            "f1": 0.916667
+          },
+          "VN_050000": {
+            "support": 24,
+            "precision": 0.96,
+            "recall": 1.0,
+            "f1": 0.979592
+          },
+          "VN_100000": {
+            "support": 38,
+            "precision": 1.0,
+            "recall": 0.947368,
+            "f1": 0.972973
+          },
+          "VN_200000": {
+            "support": 38,
+            "precision": 0.883721,
+            "recall": 1.0,
+            "f1": 0.938272
+          },
+          "VN_500000": {
+            "support": 38,
+            "precision": 0.926829,
+            "recall": 1.0,
+            "f1": 0.962025
+          }
+        }
+      },
+      "audit": {
+        "group_split_verified": false,
+        "exact_cross_split_duplicates": 182,
+        "conflicting_label_groups": 2,
+        "counts": {
+          "train": {
+            "INR_10": 345,
+            "INR_100": 346,
+            "INR_20": 346,
+            "INR_200": 381,
+            "INR_2000": 338,
+            "INR_50": 346,
+            "INR_500": 337,
+            "USA_1 Dollar": 423,
+            "USA_10 Dollar": 534,
+            "USA_100 Dollar": 432,
+            "USA_2 Dollar": 431,
+            "USA_5 Dollar": 431,
+            "USA_50 Dollar": 479,
+            "VN_000000": 175,
+            "VN_000200": 175,
+            "VN_000500": 175,
+            "VN_001000": 175,
+            "VN_002000": 175,
+            "VN_005000": 107,
+            "VN_010000": 175,
+            "VN_020000": 107,
+            "VN_050000": 107,
+            "VN_100000": 175,
+            "VN_200000": 175,
+            "VN_500000": 175
+          },
+          "val": {
+            "INR_10": 73,
+            "INR_100": 74,
+            "INR_20": 74,
+            "INR_200": 81,
+            "INR_2000": 72,
+            "INR_50": 74,
+            "INR_500": 72,
+            "USA_1 Dollar": 90,
+            "USA_10 Dollar": 114,
+            "USA_100 Dollar": 92,
+            "USA_2 Dollar": 92,
+            "USA_5 Dollar": 92,
+            "USA_50 Dollar": 102,
+            "VN_000000": 37,
+            "VN_000200": 37,
+            "VN_000500": 37,
+            "VN_001000": 37,
+            "VN_002000": 37,
+            "VN_005000": 23,
+            "VN_010000": 37,
+            "VN_020000": 23,
+            "VN_050000": 23,
+            "VN_100000": 37,
+            "VN_200000": 37,
+            "VN_500000": 37
+          },
+          "test": {
+            "INR_10": 75,
+            "INR_100": 75,
+            "INR_20": 75,
+            "INR_200": 83,
+            "INR_2000": 73,
+            "INR_50": 75,
+            "INR_500": 73,
+            "USA_1 Dollar": 92,
+            "USA_10 Dollar": 116,
+            "USA_100 Dollar": 94,
+            "USA_2 Dollar": 94,
+            "USA_5 Dollar": 94,
+            "USA_50 Dollar": 104,
+            "VN_000000": 38,
+            "VN_000200": 38,
+            "VN_000500": 38,
+            "VN_001000": 38,
+            "VN_002000": 38,
+            "VN_005000": 24,
+            "VN_010000": 38,
+            "VN_020000": 24,
+            "VN_050000": 24,
+            "VN_100000": 38,
+            "VN_200000": 38,
+            "VN_500000": 38
+          }
+        }
+      },
+      "benchmark": {
+        "runs": 100,
+        "mean_ms": 31.27,
+        "p50_ms": 28.83,
+        "p95_ms": 41.31,
+        "p99_ms": 55.86
+      }
+    }
+  ],
+  "benchmarks": [
+    {
+      "measured_at": "2026-11-10T11:26:40.203336+00:00",
+      "runs": 100,
+      "concurrency": 1,
+      "unique_image_count": 3,
+      "success_rate": 1.0,
+      "throughput_rps": 1.351,
+      "latency_ms": {
+        "mean": 738.29,
+        "p50": 786.04,
+        "p95": 1005.4,
+        "p99": 1222.13
+      },
+      "server_processing_ms": {
+        "mean": 359.94,
+        "p50": 364.1,
+        "p95": 493.6,
+        "p99": 848.4
+      },
+      "queue_ms": {
+        "mean": 0.0,
+        "p50": 0.0,
+        "p95": 0.0,
+        "p99": 0.0
+      },
+      "inference_ms": {
+        "mean": 109.67,
+        "p50": 105.4,
+        "p95": 193.7,
+        "p99": 198.7
+      },
+      "render_plan": "free",
+      "model_versions": [
+        "1.1.0"
+      ]
+    },
+    {
+      "measured_at": "2026-11-10T11:27:39.460024+00:00",
+      "runs": 100,
+      "concurrency": 4,
+      "unique_image_count": 3,
+      "success_rate": 1.0,
+      "throughput_rps": 2.535,
+      "latency_ms": {
+        "mean": 1559.36,
+        "p50": 1571.97,
+        "p95": 2089.87,
+        "p99": 2265.96
+      },
+      "server_processing_ms": {
+        "mean": 841.99,
+        "p50": 837.3,
+        "p95": 1299.3,
+        "p99": 1423.6
+      },
+      "queue_ms": {
+        "mean": 108.2,
+        "p50": 0.2,
+        "p95": 403.1,
+        "p99": 624.1
+      },
+      "inference_ms": {
+        "mean": 268.29,
+        "p50": 270.6,
+        "p95": 404.7,
+        "p99": 684.1
+      },
+      "render_plan": "free",
+      "model_versions": [
+        "1.1.0"
+      ]
+    },
+    {
+      "measured_at": "2026-11-10T11:28:41.612751+00:00",
+      "runs": 100,
+      "concurrency": 8,
+      "unique_image_count": 3,
+      "success_rate": 1.0,
+      "throughput_rps": 2.344,
+      "latency_ms": {
+        "mean": 3327.93,
+        "p50": 3069.5,
+        "p95": 5216.12,
+        "p99": 7496.01
+      },
+      "server_processing_ms": {
+        "mean": 1659.03,
+        "p50": 1598.0,
+        "p95": 3059.9,
+        "p99": 3594.9
+      },
+      "queue_ms": {
+        "mean": 430.08,
+        "p50": 306.3,
+        "p95": 882.2,
+        "p99": 2602.2
+      },
+      "inference_ms": {
+        "mean": 404.51,
+        "p50": 328.0,
+        "p95": 637.7,
+        "p99": 1840.7
+      },
+      "render_plan": "free",
+      "model_versions": [
+        "1.1.0"
+      ]
+    }
+  ],
+  "monitoring": [
+    {
+      "checked_at": "2026-11-10T11:53:36.665811+00:00",
+      "model_version": "1.1.0",
+      "release_status": "candidate",
+      "monitoring_status": "insufficient_data",
+      "model_quality_status": "insufficient_data",
+      "operational_signals": {
+        "api_5xx_24h": 0,
+        "storage_bytes": 17648456,
+        "processing_p95_ms": 341.3,
+        "processing_p99_ms": 341.3,
+        "low_confidence_rate": 0.5,
+        "distribution_js_divergence": null,
+        "operational_sample_size": 2,
+        "reviewed_count": 0,
+        "reviewed_accuracy": null
+      }
+    },
+    {
+      "checked_at": "2026-11-11T03:28:04.621701+00:00",
+      "model_version": "1.1.0",
+      "release_status": "candidate",
+      "monitoring_status": "insufficient_data",
+      "model_quality_status": "insufficient_data",
+      "operational_signals": {
+        "api_5xx_24h": 0,
+        "storage_bytes": 17648456,
+        "processing_p95_ms": 341.3,
+        "processing_p99_ms": 341.3,
+        "low_confidence_rate": 0.5,
+        "distribution_js_divergence": null,
+        "operational_sample_size": 2,
+        "reviewed_count": 0,
+        "reviewed_accuracy": null
+      }
+    }
+  ]
+}

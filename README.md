@@ -5,12 +5,12 @@ React/Vite dashboard cho hệ thống nhận dạng **mệnh giá** tiền giấ
 ## Trang và phân quyền
 
 - Khách xem staging: vào trang nhận diện và thử ảnh ngay, không cần đăng nhập; ảnh/kết quả demo không được lưu vào lịch sử.
-- Bản demo CV đặt `VITE_DEMO_ONLY=true`: chỉ mở trang nhận diện; `/login` và các link quản trị chuyển về `/`. Backend vẫn kiểm tra quyền cho API dữ liệu và quản trị.
+- Bản demo CV đặt `VITE_DEMO_ONLY=true`: mở trang nhận diện, dashboard, thông tin model, MLOps, benchmark, monitoring, phát hành và phân quyền ở chế độ xem. `/login` chuyển về `/`. Các biểu đồ dùng báo cáo chẩn đoán đã lưu trong repository backend, có ghi nguồn và ngày đo; không phải số liệu thời gian thực. Lịch sử demo chỉ lưu trong tab trình duyệt của khách.
 - Bản quản trị khi tắt `VITE_DEMO_ONLY`: người dùng đã đăng nhập xem lịch sử, dashboard vận hành và thông tin model.
 - Admin trong bản quản trị: quản lý tài khoản, **MLOps Runs**, Run Detail, Compare Models, Benchmark, Monitoring và **Phát hành & thiết bị**.
 - Test-set metrics, reviewed accuracy và benchmark latency là ba loại số liệu khác nhau. Khi thiếu baseline hoặc chưa đủ mẫu, giao diện hiển thị **“Chưa đủ dữ liệu”**. Kích hoạt/rollback chỉ nhận run đã được backend phê duyệt; dashboard không thể vượt release gate.
 
-Staging cho khách dự đoán tối đa 30 lượt mỗi phút trên một API instance, không ghi ảnh hay lịch sử của khách; API dữ liệu và quản trị vẫn yêu cầu đăng nhập. Khi mở lại bản quản trị, admin có thể đổi model đã được duyệt và rollback trên trang phát hành mà không sửa code. **Train lại, duyệt dữ liệu và tạo approved run vẫn cần quy trình backend**, chưa có nút train tự động trong frontend. Xem [backend README](https://github.com/khanhlinhcode/Currency_Backend/blob/main/README.md) và [release-control runbook](https://github.com/khanhlinhcode/Currency_Backend/blob/main/docs/release-control-runbook.md).
+Staging cho khách dự đoán tối đa 30 lượt mỗi phút trên một API instance, không ghi ảnh hay lịch sử của khách trên backend; API dữ liệu và quản trị vẫn yêu cầu đăng nhập. Khi mở lại bản quản trị, admin có thể đổi model đã được duyệt và rollback trên trang phát hành mà không sửa code. **Train lại, duyệt dữ liệu và tạo approved run vẫn cần quy trình backend**, chưa có nút train tự động trong frontend. Xem [backend README](https://github.com/khanhlinhcode/Currency_Backend/blob/main/README.md) và [release-control runbook](https://github.com/khanhlinhcode/Currency_Backend/blob/main/docs/release-control-runbook.md).
 
 ## Chạy cục bộ
 
