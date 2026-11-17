@@ -5,11 +5,11 @@ import { AuthContext } from "../context/AuthContext";
 import { DEMO_ONLY } from "../demoMode";
 
 const titleMap = {
-  "/": "Nhận diện tiền giấy đa quốc gia",
-  "/history": "Lịch sử nhận diện và đối soát",
-  "/dashboard": "Dashboard rủi ro và vận hành",
-  "/model-info": "Model Info & Training Metadata",
-  "/users": "Quản lý tài khoản đăng nhập hệ thống",
+  "/": "Nhận diện tiền giấy",
+  "/history": "Lịch sử phiên demo",
+  "/dashboard": "Tổng quan hệ thống",
+  "/model-info": "Thông tin mô hình",
+  "/users": "Phân quyền hệ thống",
   "/mlops/runs": "Hồ sơ MLOps",
   "/mlops/compare": "So sánh model",
   "/mlops/benchmarks": "Benchmark",
@@ -44,7 +44,7 @@ export default function Navbar({ onToggleSidebar }) {
         </button>
 
         <div>
-          <p className="topbar__eyebrow">Global Currency Intelligence Platform</p>
+          <p className="topbar__eyebrow">Banknote AI / Demo</p>
           <h1 className="topbar__title">{title}</h1>
         </div>
       </div>
@@ -52,7 +52,7 @@ export default function Navbar({ onToggleSidebar }) {
       <div className="topbar__right">
         <div className="topbar__status">
           <ShieldCheck size={16} />
-          <span>{DEMO_ONLY ? "Demo mở · không cần đăng nhập" : getSessionLabel(user, token)}</span>
+          <span>{DEMO_ONLY ? "Demo công khai" : getSessionLabel(user, token)}</span>
         </div>
 
         {DEMO_ONLY ? null : token ? (

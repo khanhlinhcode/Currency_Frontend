@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Project-local design skills (installed for development, not shipped to the app)
+.agents/skills/

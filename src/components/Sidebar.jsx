@@ -37,64 +37,55 @@ const adminLinks = [
   { to: "/users", label: "Quản lý người dùng", icon: UsersRound },
 ];
 
-const demoLinks = [
-  ...commonLinks,
-  ...protectedLinks,
-  ...adminLinks.map((item) => item.to === "/users" ? { ...item, label: "Phân quyền" } : item),
+const demoGroups = [
+  { label: "Khám phá", items: [commonLinks[0], protectedLinks[0], protectedLinks[1]] },
+  { label: "Mô hình", items: [protectedLinks[2], adminLinks[0], adminLinks[1]] },
+  { label: "Vận hành", items: [...adminLinks.slice(2, 5), { ...adminLinks[5], label: "Phân quyền" }] },
 ];
+
+function NavigationItems({ items, onNavigate }) {
+  return items.map((item) => {
+    const Icon = item.icon;
+    return <NavLink key={item.to} to={item.to} end={item.end} className={({ isActive }) => `sidebar__link ${isActive ? "is-active" : ""}`} onClick={onNavigate}>
+      <Icon size={18} aria-hidden="true" />
+      <span>{item.label}</span>
+    </NavLink>;
+  });
+}
 
 export default function Sidebar({ mobileNavOpen, onNavigate }) {
   const { token, role } = useContext(AuthContext);
 
-  const navigation = DEMO_ONLY ? demoLinks : [
+  const navigation = [
     ...commonLinks,
     ...(token ? protectedLinks : []),
     ...(token && role === "admin" ? adminLinks : []),
   ];
 
   return (
-    <aside className={`sidebar ${mobileNavOpen ? "is-open" : ""}`}>
+    <aside className={`sidebar ${mobileNavOpen ? "is-open" : ""}`} aria-label="Điều hướng chính">
       <div className="sidebar__brand">
         <span className="sidebar__brand-icon">
-          <Banknote size={20} />
+          <Banknote size={21} aria-hidden="true" />
         </span>
         <div>
           <p className="sidebar__brand-title">Banknote AI</p>
-          <p className="sidebar__brand-subtitle">Recognition Workspace</p>
+          <p className="sidebar__brand-subtitle">Currency intelligence</p>
         </div>
       </div>
 
       <div className="sidebar__meta">
-        <span>
-          <Globe2 size={14} />
-          3 quốc gia
-        </span>
-        <span>
-          <Layers3 size={14} />
-          25 lớp nhận diện
-        </span>
+        <span><Globe2 size={15} aria-hidden="true" />3 quốc gia</span>
+        <span><Layers3 size={15} aria-hidden="true" />25 lớp nhận diện</span>
       </div>
 
       <nav className="sidebar__nav">
-        {navigation.map((item) => {
-          const Icon = item.icon;
-
-          return (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              end={item.end}
-              className={({ isActive }) =>
-                `sidebar__link ${isActive ? "is-active" : ""}`
-              }
-              onClick={onNavigate}
-            >
-              <Icon size={17} />
-              <span>{item.label}</span>
-            </NavLink>
-          );
-        })}
+        {DEMO_ONLY ? demoGroups.map((group) => <div className="sidebar__group" key={group.label}>
+          <p className="sidebar__group-label">{group.label}</p>
+          <NavigationItems items={group.items} onNavigate={onNavigate} />
+        </div>) : <NavigationItems items={navigation} onNavigate={onNavigate} />}
       </nav>
+      {DEMO_ONLY && <div className="sidebar__footer"><span className="sidebar__live-dot" />Bản demo công khai<span>Chế độ chỉ xem báo cáo</span></div>}
     </aside>
   );
 }

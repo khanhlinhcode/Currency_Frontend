@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
+import { DEMO_ONLY } from "../demoMode";
 
 export default function Layout({ children }) {
   const location = useLocation();
@@ -15,11 +16,13 @@ export default function Layout({ children }) {
   const closeMobileNav = () => setMobileNavOpen(false);
 
   return (
-    <div className="app-shell">
-      <div
+    <div className={`app-shell ${DEMO_ONLY ? "demo-shell" : ""}`}>
+      <button
+        type="button"
         className={`app-shell__overlay ${mobileNavOpen ? "is-visible" : ""}`}
         onClick={closeMobileNav}
-        aria-hidden="true"
+        aria-label="Đóng điều hướng"
+        tabIndex={mobileNavOpen ? 0 : -1}
       />
 
       <Sidebar mobileNavOpen={mobileNavOpen} onNavigate={closeMobileNav} />

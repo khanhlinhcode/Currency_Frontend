@@ -1,7 +1,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import Webcam from "react-webcam";
+import { Link } from "react-router-dom";
 import {
+  ArrowRight,
+  BarChart3,
   Camera,
   CircleAlert,
   CircleCheckBig,
@@ -234,26 +237,27 @@ export default function Predict() {
 
   return (
     <div className="predict-page fade-in">
-      <section className="hero-panel">
-        <p className="panel-kicker">AI-Powered Detection Pipeline</p>
-        <h2>Nhận diện mệnh giá tiền giấy của nhiều quốc gia chỉ với một ảnh</h2>
-        <p>
-          Nạp ảnh từ kéo-thả hoặc camera trực tiếp. Hệ thống sẽ tự chạy nhận diện
-          và trả về dự đoán chính, confidence và top-3 lớp.
-        </p>
-        {import.meta.env.VITE_APP_ENV === "staging" ? (
-          <p>
-            Khách xem demo có thể thử ngay mà không cần tài khoản. Ảnh và kết quả
-            dự đoán của khách không được lưu vào lịch sử hệ thống.
-          </p>
-        ) : null}
+      <section className="hero-panel predict-hero">
+        <div className="predict-hero__copy">
+          <h2>Nhận diện tiền giấy từ một tấm ảnh.</h2>
+          <p>Chọn ảnh hoặc dùng camera để xem dự đoán, mức tin cậy và ba lớp gần nhất. Demo hỗ trợ 25 lớp tiền giấy tại 3 quốc gia.</p>
+          {DEMO_ONLY && <div className="predict-hero__actions">
+            <a href="#thu-nhan-dien" className="primary-btn">Thử nhận diện <ArrowRight size={17} aria-hidden="true" /></a>
+            <Link to="/dashboard" className="hero-text-link"><BarChart3 size={18} aria-hidden="true" />Xem biểu đồ & MLOps</Link>
+          </div>}
+        </div>
+        <div className="predict-hero__facts" aria-label="Phạm vi demo">
+          <div><strong>03</strong><span>quốc gia</span></div>
+          <div><strong>25</strong><span>lớp nhận diện</span></div>
+          <div><strong>v1.1</strong><span>model candidate</span></div>
+        </div>
       </section>
 
       <section className="predict-grid">
-        <article className="panel upload-panel">
+        <article className="panel upload-panel" id="thu-nhan-dien">
           <div className="panel-title">
             <FileImage size={20} />
-            <h3>Upload / Camera Detection</h3>
+            <h3>Thử với ảnh của bạn</h3>
           </div>
 
           <div className="camera-actions">
@@ -264,7 +268,7 @@ export default function Predict() {
               disabled={isPredicting}
             >
               <Camera size={16} />
-              <span>{isCameraOpen ? "Đóng camera" : "Use Camera"}</span>
+              <span>{isCameraOpen ? "Đóng camera" : "Mở camera"}</span>
             </button>
 
             {file ? (
@@ -304,7 +308,7 @@ export default function Predict() {
                 ) : (
                   <>
                     <Sparkles size={16} />
-                    <span>Capture & Predict</span>
+                    <span>Chụp và nhận diện</span>
                   </>
                 )}
               </button>
@@ -319,11 +323,11 @@ export default function Predict() {
               <input {...getInputProps()} />
 
               {previewUrl ? (
-                <img src={previewUrl} alt="Banknote preview" className="upload-preview" />
+                <img src={previewUrl} alt="Ảnh tiền giấy đã chọn để nhận diện" className="upload-preview" />
               ) : (
                 <div className="upload-empty">
                   <Upload size={28} />
-                  <p>Kéo thả hoặc nhấn để chọn ảnh tiền giấy</p>
+                  <p>Thả ảnh vào đây hoặc nhấn để chọn</p>
                   <span>Định dạng hỗ trợ: JPG, PNG, WEBP • Tối đa 10MB</span>
                 </div>
               )}
@@ -352,14 +356,14 @@ export default function Predict() {
         <article className="panel info-panel">
           <div className="panel-title">
             <CircleCheckBig size={20} />
-            <h3>Quy trình đề xuất</h3>
+            <h3>Cách có kết quả tốt</h3>
           </div>
           <ul>
-            <li>Upload: kéo-thả hoặc click chọn ảnh, hệ thống tự nhận diện ngay.</li>
-            <li>Camera: mở camera, căn chỉnh khung hình rồi Capture & Predict.</li>
-            <li>Đặt tờ tiền trên nền phẳng, đủ sáng để tăng độ chính xác.</li>
-            <li>Dùng dashboard để xem biểu đồ model và bằng chứng benchmark đã lưu.</li>
+            <li>Đặt tờ tiền trên nền phẳng, đủ sáng và chụp rõ cả tờ.</li>
+            <li>Chọn ảnh JPG, PNG hoặc WEBP dưới 10 MB; kết quả sẽ hiện ngay sau khi tải lên.</li>
+            <li>Với camera, căn chỉnh khung hình rồi nhấn “Chụp và nhận diện”.</li>
           </ul>
+          {DEMO_ONLY && <p className="info-panel__note">Kết quả chỉ mang tính tham khảo. Ảnh và lượt thử của khách không được lưu vào lịch sử backend.</p>}
         </article>
       </section>
 

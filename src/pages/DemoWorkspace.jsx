@@ -15,12 +15,12 @@ const number = (value, unit = "") => typeof value === "number" ? `${new Intl.Num
 const date = (value) => value ? new Date(value).toLocaleString("vi-VN") : "Chưa có";
 const country = (name) => name.startsWith("INR") ? "Ấn Độ" : name.startsWith("USA") ? "Hoa Kỳ" : "Việt Nam";
 
-function Header({ eyebrow, title, children }) {
-  return <section className="hero-panel"><p className="panel-kicker">{eyebrow}</p><h2>{title}</h2><p>{children}</p></section>;
+function Header({ title, children }) {
+  return <section className="hero-panel demo-header"><div><h2>{title}</h2><p>{children}</p></div><span className="demo-header__badge">Báo cáo đã lưu</span></section>;
 }
 
 function SourceNote() {
-  return <section className="panel demo-source-note"><strong>Nguồn số liệu:</strong> {evidence.source_note} Model hiện là candidate; các kết quả test cũ có trùng ảnh giữa các tập và chưa xác minh nhóm tờ tiền vật lý.</section>;
+  return <section className="panel demo-source-note"><strong>Về số liệu</strong><p>{evidence.source_note} Model hiện là candidate; các kết quả test cũ có trùng ảnh giữa các tập và chưa xác minh nhóm tờ tiền vật lý.</p></section>;
 }
 
 function Stat({ label, value, detail }) {
@@ -51,13 +51,13 @@ function DemoDashboard() {
     </div>
     <div className="dashboard-charts-grid">
       <section className="panel chart-panel"><div className="panel-title"><h3>F1 trung bình theo quốc gia · tập test cũ</h3></div>
-        <div className="chart-wrap"><ResponsiveContainer width="100%" height={270}><BarChart data={classes}><CartesianGrid strokeDasharray="3 3" /><XAxis dataKey="name" /><YAxis domain={[0, 100]} unit="%" /><Tooltip /><Bar dataKey="f1" name="F1 (%)" fill="#4dd6bf" /></BarChart></ResponsiveContainer></div>
+        <div className="chart-wrap"><ResponsiveContainer width="100%" height={270}><BarChart data={classes}><CartesianGrid strokeDasharray="3 3" /><XAxis dataKey="name" /><YAxis domain={[0, 100]} unit="%" /><Tooltip /><Bar dataKey="f1" name="F1 (%)" fill="#2855a3" radius={[5, 5, 0, 0]} /></BarChart></ResponsiveContainer></div>
       </section>
       <section className="panel chart-panel"><div className="panel-title"><h3>Mẫu test theo quốc gia</h3></div>
-        <div className="chart-wrap"><ResponsiveContainer width="100%" height={270}><BarChart data={classes}><CartesianGrid strokeDasharray="3 3" /><XAxis dataKey="name" /><YAxis /><Tooltip /><Bar dataKey="samples" name="Số ảnh" fill="#84b6ff" /></BarChart></ResponsiveContainer></div>
+        <div className="chart-wrap"><ResponsiveContainer width="100%" height={270}><BarChart data={classes}><CartesianGrid strokeDasharray="3 3" /><XAxis dataKey="name" /><YAxis /><Tooltip /><Bar dataKey="samples" name="Số ảnh" fill="#b97320" radius={[5, 5, 0, 0]} /></BarChart></ResponsiveContainer></div>
       </section>
       <section className="panel chart-panel chart-panel--full"><div className="panel-title"><h3>HTTP p95 trên Render Free · 10/11/2026</h3></div>
-        <div className="chart-wrap"><ResponsiveContainer width="100%" height={280}><LineChart data={benchmarks}><CartesianGrid strokeDasharray="3 3" /><XAxis dataKey="concurrency" label={{ value: "Số request đồng thời", position: "insideBottom", offset: -2 }} /><YAxis unit=" ms" /><Tooltip /><Legend /><Line type="monotone" dataKey="latency_ms.p95" name="HTTP p95 (ms)" stroke="#f8b367" strokeWidth={3} /></LineChart></ResponsiveContainer></div>
+        <div className="chart-wrap"><ResponsiveContainer width="100%" height={280}><LineChart data={benchmarks}><CartesianGrid strokeDasharray="3 3" /><XAxis dataKey="concurrency" label={{ value: "Số request đồng thời", position: "insideBottom", offset: -2 }} /><YAxis unit=" ms" /><Tooltip /><Legend /><Line type="monotone" dataKey="latency_ms.p95" name="HTTP p95 (ms)" stroke="#b97320" strokeWidth={3} dot={{ r: 5 }} /></LineChart></ResponsiveContainer></div>
       </section>
     </div>
     <SourceNote />
@@ -147,7 +147,7 @@ function DemoBenchmarks() {
   return <div className="dashboard-page fade-in">
     <Header eyebrow="Performance evidence" title="Benchmark Render Free">Ba phép đo HTTP staging ngày 10/11/2026, mỗi phép đo 100 request. P95 tăng khi số request đồng thời tăng.</Header>
     <div className="dashboard-charts-grid"><section className="panel chart-panel chart-panel--full"><div className="panel-title"><h3>Độ trễ HTTP p50 / p95 theo mức đồng thời</h3></div>
-      <div className="chart-wrap"><ResponsiveContainer width="100%" height={300}><LineChart data={benchmarks}><CartesianGrid strokeDasharray="3 3" /><XAxis dataKey="concurrency" /><YAxis unit=" ms" /><Tooltip /><Legend /><Line dataKey="latency_ms.p50" name="p50" stroke="#4dd6bf" strokeWidth={3} /><Line dataKey="latency_ms.p95" name="p95" stroke="#f8b367" strokeWidth={3} /></LineChart></ResponsiveContainer></div>
+      <div className="chart-wrap"><ResponsiveContainer width="100%" height={300}><LineChart data={benchmarks}><CartesianGrid strokeDasharray="3 3" /><XAxis dataKey="concurrency" /><YAxis unit=" ms" /><Tooltip /><Legend /><Line dataKey="latency_ms.p50" name="p50" stroke="#2855a3" strokeWidth={3} dot={{ r: 5 }} /><Line dataKey="latency_ms.p95" name="p95" stroke="#b97320" strokeWidth={3} strokeDasharray="6 4" dot={{ r: 5 }} /></LineChart></ResponsiveContainer></div>
     </section></div>
     <section className="panel chart-panel"><div className="table-wrap"><table className="history-table"><thead><tr><th>Đồng thời</th><th>Lượt</th><th>Thành công</th><th>Thông lượng</th><th>HTTP p95</th><th>Inference p95</th></tr></thead><tbody>
       {benchmarks.map((row) => <tr key={row.concurrency}><td>{row.concurrency}</td><td>{row.runs}</td><td>{percent(row.success_rate)}</td><td>{number(row.throughput_rps, " req/s")}</td><td>{number(row.latency_ms.p95, " ms")}</td><td>{number(row.inference_ms.p95, " ms")}</td></tr>)}
@@ -161,7 +161,7 @@ function DemoMonitoring() {
   return <div className="dashboard-page fade-in">
     <Header eyebrow="Operations monitoring" title="Tín hiệu staging đã lưu">Snapshot giám sát ngày 10–11/11/2026. Mẫu vận hành còn quá ít để kết luận drift hoặc độ đúng production.</Header>
     <div className="dashboard-grid dashboard-grid--four"><Stat label="Trạng thái model" value="Chưa đủ dữ liệu" /><Stat label="Mẫu vận hành" value={number(current.operational_signals.operational_sample_size)} /><Stat label="API 5xx · 24 giờ" value={number(current.errors)} /><Stat label="Processing p95" value={number(current.p95, " ms")} /></div>
-    <section className="panel chart-panel"><div className="panel-title"><h3>Processing p95 qua các snapshot</h3></div><div className="chart-wrap"><ResponsiveContainer width="100%" height={260}><LineChart data={snapshots}><CartesianGrid strokeDasharray="3 3" /><XAxis dataKey="checked_at" tickFormatter={(x) => new Date(x).toLocaleDateString("vi-VN")} /><YAxis unit=" ms" /><Tooltip labelFormatter={date} /><Line dataKey="p95" name="p95" stroke="#84b6ff" strokeWidth={3} /></LineChart></ResponsiveContainer></div></section>
+    <section className="panel chart-panel"><div className="panel-title"><h3>Processing p95 qua các snapshot</h3></div><div className="chart-wrap"><ResponsiveContainer width="100%" height={260}><LineChart data={snapshots}><CartesianGrid strokeDasharray="3 3" /><XAxis dataKey="checked_at" tickFormatter={(x) => new Date(x).toLocaleDateString("vi-VN")} /><YAxis unit=" ms" /><Tooltip labelFormatter={date} /><Line dataKey="p95" name="p95" stroke="#2855a3" strokeWidth={3} dot={{ r: 5 }} /></LineChart></ResponsiveContainer></div></section>
     <section className="panel chart-panel"><div className="table-wrap"><table className="history-table"><thead><tr><th>Thời gian</th><th>Monitoring</th><th>Mẫu</th><th>5xx</th><th>p95</th></tr></thead><tbody>{snapshots.map((row) => <tr key={row.checked_at}><td>{date(row.checked_at)}</td><td>Chưa đủ dữ liệu</td><td>{number(row.operational_signals.operational_sample_size)}</td><td>{number(row.errors)}</td><td>{number(row.p95, " ms")}</td></tr>)}</tbody></table></div></section><SourceNote />
   </div>;
 }
