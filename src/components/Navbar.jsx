@@ -12,8 +12,8 @@ const titleMap = {
   "/users": "Phân quyền hệ thống",
   "/mlops/runs": "Hồ sơ MLOps",
   "/mlops/compare": "So sánh model",
-  "/mlops/benchmarks": "Benchmark",
-  "/mlops/monitoring": "Monitoring",
+  "/mlops/benchmarks": "Hiệu năng hệ thống",
+  "/mlops/monitoring": "Giám sát vận hành",
   "/mlops/releases": "Phát hành và thiết bị",
 };
 

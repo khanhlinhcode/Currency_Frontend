@@ -39,8 +39,13 @@ const adminLinks = [
 
 const demoGroups = [
   { label: "Khám phá", items: [commonLinks[0], protectedLinks[0], protectedLinks[1]] },
-  { label: "Mô hình", items: [protectedLinks[2], adminLinks[0], adminLinks[1]] },
-  { label: "Vận hành", items: [...adminLinks.slice(2, 5), { ...adminLinks[5], label: "Phân quyền" }] },
+  { label: "Mô hình", items: [protectedLinks[2], { ...adminLinks[0], label: "Hồ sơ MLOps" }, adminLinks[1]] },
+  { label: "Vận hành", items: [
+    { ...adminLinks[2], label: "Hiệu năng" },
+    { ...adminLinks[3], label: "Giám sát" },
+    { ...adminLinks[4], label: "Phát hành" },
+    { ...adminLinks[5], label: "Phân quyền" },
+  ] },
 ];
 
 function NavigationItems({ items, onNavigate }) {
@@ -70,7 +75,7 @@ export default function Sidebar({ mobileNavOpen, onNavigate }) {
         </span>
         <div>
           <p className="sidebar__brand-title">Banknote AI</p>
-          <p className="sidebar__brand-subtitle">Currency intelligence</p>
+          <p className="sidebar__brand-subtitle">Nhận diện tiền giấy</p>
         </div>
       </div>
 
