@@ -15,8 +15,8 @@ const number = (value, unit = "") => typeof value === "number" ? `${new Intl.Num
 const date = (value) => value ? new Date(value).toLocaleString("vi-VN") : "Chưa có";
 const country = (name) => name.startsWith("INR") ? "Ấn Độ" : name.startsWith("USA") ? "Hoa Kỳ" : "Việt Nam";
 
-function Header({ title, children }) {
-  return <header className="demo-header"><h2>{title}</h2><p>{children}</p></header>;
+function Header({ title, eyebrow = "Báo cáo đã lưu", children }) {
+  return <header className="demo-header"><span className="demo-header__eyebrow">{eyebrow}</span><h2>{title}</h2><p>{children}</p></header>;
 }
 
 function Stat({ label, value, detail }) {
@@ -38,15 +38,16 @@ function countryMetrics(run) {
 function DemoDashboard() {
   const classes = useMemo(() => countryMetrics(latest), []);
   return <div className="dashboard-page fade-in">
-    <Header title="Tổng quan hiệu năng">Các chỉ số và biểu đồ từ bản đánh giá model, cùng phép đo hiệu năng của hệ thống.</Header>
+    <Header title="Tổng quan hiệu năng" eyebrow="Đánh giá mô hình · 08/11/2026">Các chỉ số của model candidate và phép đo hiệu năng staging đã lưu.</Header>
     <div className="dashboard-grid dashboard-grid--four">
       <Stat label="Phiên bản model" value={latest.model_version} detail="Trạng thái candidate" />
       <Stat label="Accuracy · tập đánh giá" value={percent(latest.accuracy)} detail="Run ngày 08/11/2026" />
       <Stat label="Macro F1 · tập đánh giá" value={percent(latest.macro_f1)} detail="Run ngày 08/11/2026" />
       <Stat label="Số lớp nhận diện" value={evidence.manifest.class_names.length} detail="3 quốc gia" />
     </div>
+    <p className="demo-source-line">Kết quả trên tập đánh giá nghiên cứu. <Link to="/model-info">Xem mô hình và phương pháp đánh giá</Link></p>
     <div className="dashboard-charts-grid">
-      <section className="panel chart-panel"><div className="panel-title"><h3>F1 trung bình theo quốc gia</h3></div>
+      <section className="panel chart-panel"><div className="panel-title"><h3>Macro F1 theo quốc gia</h3></div>
         <div className="chart-wrap"><ResponsiveContainer width="100%" height={270}><BarChart data={classes}><CartesianGrid strokeDasharray="3 3" /><XAxis dataKey="name" /><YAxis domain={[0, 100]} unit="%" /><Tooltip /><Bar dataKey="f1" name="F1 (%)" fill="#0071e3" radius={[5, 5, 0, 0]} /></BarChart></ResponsiveContainer></div>
       </section>
       <section className="panel chart-panel"><div className="panel-title"><h3>Mẫu test theo quốc gia</h3></div>
@@ -76,7 +77,7 @@ function DemoModelInfo() {
     <section className="panel chart-panel"><div className="panel-title"><h3>{m.class_names.length} lớp nhận diện</h3></div>
       <div className="classes-grid">{m.class_names.map((name) => <span className="class-chip" key={name}>{name}</span>)}</div>
     </section>
-    <details className="panel evaluation-disclosure"><summary>Về phương pháp đánh giá</summary><p>{evidence.source_note} Các chỉ số trình bày trên demo là kết quả nghiên cứu của model candidate, chưa phải kết quả phát hành chính thức.</p></details>
+    <details className="panel evaluation-disclosure"><summary>Về phương pháp đánh giá</summary><p>{evidence.source_note} Các chỉ số trình bày trên demo là kết quả nghiên cứu của model candidate. Split theo nhóm nguồn ảnh chưa được xác minh, vì vậy chưa thể dùng các chỉ số này để khẳng định chất lượng vận hành.</p></details>
   </div>;
 }
 
@@ -99,10 +100,10 @@ function DemoHistory() {
 
 function DemoRuns() {
   return <div className="dashboard-page fade-in">
-    <Header title="Hồ sơ huấn luyện">Theo dõi phiên bản model, thời điểm đánh giá và kết quả của từng run.</Header>
+    <Header title="Hồ sơ đánh giá">Theo dõi phiên bản model, runtime và kết quả của từng run đã lưu.</Header>
     <section className="panel chart-panel"><div className="panel-title"><h3>{runs.length} run đã lưu</h3></div>
-      <div className="table-wrap"><table className="history-table"><thead><tr><th>Run</th><th>Ghi nhận</th><th>Model</th><th>Accuracy</th><th>Macro F1</th><th>Trạng thái</th></tr></thead><tbody>
-        {runs.map((run) => <tr key={run.run_id}><td><Link to={`/mlops/runs/${run.run_id}`}>{run.run_id}</Link></td><td>{date(run.recorded_at)}</td><td>{run.model_version}</td><td>{percent(run.accuracy)}</td><td>{percent(run.macro_f1)}</td><td>Candidate</td></tr>)}
+      <div className="table-wrap"><table className="history-table"><thead><tr><th>Run</th><th>Ghi nhận</th><th>Runtime</th><th>Accuracy</th><th>Macro F1</th><th>Trạng thái</th></tr></thead><tbody>
+        {runs.map((run) => <tr key={run.run_id}><td><Link to={`/mlops/runs/${run.run_id}`}>{run.run_id}</Link></td><td>{date(run.recorded_at)}</td><td>{run.framework}</td><td>{percent(run.accuracy)}</td><td>{percent(run.macro_f1)}</td><td>Candidate</td></tr>)}
       </tbody></table></div>
     </section>
   </div>;
@@ -111,10 +112,10 @@ function DemoRuns() {
 function DemoRunDetail({ run }) {
   const classes = Object.entries(run.evaluation.per_class || {}).map(([name, item]) => ({ name, f1: item.f1 ?? item["f1-score"], support: item.support }));
   return <div className="dashboard-page fade-in">
-    <Header title={run.run_id}>Model {run.model_version} · Đánh giá lúc {date(run.recorded_at)}.</Header>
+    <Header title={run.run_id}>{run.framework} · Model {run.model_version} · Đánh giá lúc {date(run.recorded_at)}.</Header>
     <div className="dashboard-grid dashboard-grid--four">
       <Stat label="Accuracy" value={percent(run.accuracy)} /><Stat label="Macro F1" value={percent(run.macro_f1)} />
-      <Stat label="ECE" value={number(run.ece_10_bins)} /><Stat label="Mẫu test" value={number(run.evaluation.test_samples)} />
+      <Stat label="ECE · 10 bins" value={percent(run.ece_10_bins)} /><Stat label="Mẫu test" value={number(run.evaluation.test_samples)} />
     </div>
     <section className="panel chart-panel"><div className="panel-title"><h3>Hiệu năng inference</h3></div><p>Độ trễ p95 cục bộ: {number(run.benchmark.p95_ms, " ms")} · {number(run.benchmark.runs)} lượt đo.</p></section>
     <section className="panel chart-panel"><div className="panel-title"><h3>F1 theo lớp</h3></div>
@@ -126,8 +127,8 @@ function DemoRunDetail({ run }) {
 function DemoCompare() {
   const fields = [["Accuracy", "accuracy"], ["Macro F1", "macro_f1"], ["Accepted coverage", "accepted_coverage"], ["Accepted accuracy", "accepted_accuracy"]];
   return <div className="dashboard-page fade-in">
-    <Header title="So sánh model">Đối chiếu các chỉ số đánh giá và thời gian inference giữa các run đã lưu.</Header>
-    <section className="panel chart-panel"><div className="table-wrap"><table className="history-table"><thead><tr><th>Chỉ số</th>{runs.map((run) => <th key={run.run_id}>{run.run_id}</th>)}</tr></thead><tbody>
+    <Header title="So sánh các run">Hai run sử dụng cùng model 1.1.0 và tập đánh giá; bản ONNX khác ở thời gian inference cục bộ.</Header>
+    <section className="panel chart-panel"><div className="table-wrap"><table className="history-table"><thead><tr><th>Chỉ số</th>{runs.map((run) => <th key={run.run_id}><span>{run.framework}</span><small className="compare-run-id">{run.run_id}</small></th>)}</tr></thead><tbody>
       {fields.map(([label, key]) => <tr key={key}><td>{label}</td>{runs.map((run) => <td key={run.run_id}>{percent(run[key])}</td>)}</tr>)}
       <tr><td>Inference p95 cục bộ</td>{runs.map((run) => <td key={run.run_id}>{number(run.inference_p95_ms, " ms")}</td>)}</tr>
     </tbody></table></div></section>
@@ -150,15 +151,16 @@ function DemoMonitoring() {
   const snapshots = evidence.monitoring.map((item) => ({ ...item, p95: item.operational_signals.processing_p95_ms, errors: item.operational_signals.api_5xx_24h }));
   const current = snapshots.at(-1);
   return <div className="dashboard-page fade-in">
-    <Header title="Giám sát vận hành">Tổng hợp các tín hiệu staging đã ghi nhận trong ngày 10–11/11/2026.</Header>
-    <div className="dashboard-grid dashboard-grid--four"><Stat label="Snapshot đã lưu" value={snapshots.length} /><Stat label="Mẫu vận hành" value={number(current.operational_signals.operational_sample_size)} /><Stat label="API 5xx · 24 giờ" value={number(current.errors)} /><Stat label="Processing p95" value={number(current.p95, " ms")} /></div>
+    <Header title="Giám sát vận hành" eyebrow="Snapshot · 10–11/11/2026">Tín hiệu staging tại thời điểm ghi nhận. Các số liệu này không cập nhật theo thời gian thực.</Header>
+    <div className="dashboard-grid dashboard-grid--four"><Stat label="Snapshot đã lưu" value={snapshots.length} /><Stat label="Mẫu vận hành" value={number(current.operational_signals.operational_sample_size)} detail="Chưa đủ mẫu kết luận" /><Stat label="API 5xx · lúc ghi nhận" value={number(current.errors)} /><Stat label="Processing p95" value={number(current.p95, " ms")} /></div>
+    <p className="demo-source-line">Trạng thái chất lượng model: chưa đủ dữ liệu. Chưa có nhãn đối soát để tính accuracy vận hành.</p>
     <section className="panel chart-panel"><div className="panel-title"><h3>Processing p95 qua các snapshot</h3></div><div className="chart-wrap"><ResponsiveContainer width="100%" height={260}><LineChart data={snapshots}><CartesianGrid strokeDasharray="3 3" /><XAxis dataKey="checked_at" tickFormatter={(x) => new Date(x).toLocaleDateString("vi-VN")} /><YAxis unit=" ms" /><Tooltip labelFormatter={date} /><Line dataKey="p95" name="p95" stroke="#0071e3" strokeWidth={3} dot={{ r: 5 }} /></LineChart></ResponsiveContainer></div></section>
     <section className="panel chart-panel"><div className="table-wrap"><table className="history-table"><thead><tr><th>Thời gian</th><th>Mẫu</th><th>5xx</th><th>p95</th></tr></thead><tbody>{snapshots.map((row) => <tr key={row.checked_at}><td>{date(row.checked_at)}</td><td>{number(row.operational_signals.operational_sample_size)}</td><td>{number(row.errors)}</td><td>{number(row.p95, " ms")}</td></tr>)}</tbody></table></div></section>
   </div>;
 }
 
 function DemoReleases() {
-  return <div className="dashboard-page fade-in"><Header title="Phát hành và thiết bị">Quản lý phiên bản model qua các bước kiểm định, phát hành và triển khai tới thiết bị.</Header>
+  return <div className="dashboard-page fade-in"><Header title="Phát hành và thiết bị">Theo dõi trạng thái phát hành model và quy trình triển khai tới thiết bị.</Header>
     <div className="dashboard-grid dashboard-grid--four"><Stat label="Phiên bản model" value={evidence.manifest.version} /><Stat label="Trạng thái" value={evidence.manifest.release_status} /><Stat label="Run đánh giá" value={runs.length} /><Stat label="Run đã phát hành" value="0" /></div>
     <section className="panel chart-panel"><div className="panel-title"><h3>Quy trình phát hành</h3></div><p>Model trải qua đánh giá dữ liệu, release gate, kiểm tra artifact và khả năng rollback trước khi kích hoạt trên thiết bị.</p><p>Phiên bản đang hiển thị có trạng thái candidate và chưa được phát hành.</p></section>
   </div>;

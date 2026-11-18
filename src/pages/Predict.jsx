@@ -13,7 +13,6 @@ import {
   LoaderCircle,
   ScanLine,
   ShieldAlert,
-  Sparkles,
   Upload,
   X,
 } from "lucide-react";
@@ -43,7 +42,7 @@ function confidenceLevel(percent) {
 function validateImageFile(file) {
   if (!file) return "Không tìm thấy file upload.";
 
-  if (!(file.type in ACCEPTED_MIME)) {
+  if (!Object.hasOwn(ACCEPTED_MIME, file.type)) {
     return "Chỉ hỗ trợ ảnh JPG, PNG hoặc WEBP.";
   }
 
@@ -54,11 +53,27 @@ function validateImageFile(file) {
   return "";
 }
 
-function formatMoney(value) {
+function formatMoney(value, prediction) {
   const amount = Number(value);
 
-  if (!Number.isFinite(amount)) return "N/A";
-  return new Intl.NumberFormat("vi-VN").format(amount);
+  if (!Number.isFinite(amount) || amount <= 0) return "Không xác định";
+  const unit = currencyUnit(prediction);
+  return `${new Intl.NumberFormat("vi-VN").format(amount)}${unit ? ` ${unit}` : ""}`;
+}
+
+function currencyUnit(prediction) {
+  if (prediction?.startsWith("VN_")) return "VND";
+  if (prediction?.startsWith("USA_")) return "USD";
+  if (prediction?.startsWith("INR_")) return "INR";
+  return "";
+}
+
+function predictionErrorMessage(error) {
+  const status = error.response?.status;
+  if (status === 429) return "Demo đang có nhiều lượt thử. Vui lòng đợi một phút rồi chọn ảnh lại.";
+  if (status === 413) return "Ảnh vượt quá 10 MB. Hãy chọn ảnh nhỏ hơn.";
+  if (status === 400 || status === 422) return "Không đọc được ảnh này. Hãy chọn ảnh JPG, PNG hoặc WEBP khác.";
+  return "Dịch vụ nhận diện chưa phản hồi. Vui lòng thử lại sau ít phút.";
 }
 
 function dataUrlToFile(dataUrl, fileName) {
@@ -102,6 +117,8 @@ async function prepareDemoUpload(file) {
 
 export default function Predict() {
   const webcamRef = useRef(null);
+  const requestIdRef = useRef(0);
+  const requestControllerRef = useRef(null);
 
   const [file, setFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState("");
@@ -119,13 +136,27 @@ export default function Predict() {
     [previewUrl],
   );
 
+  useEffect(() => () => requestControllerRef.current?.abort(), []);
+
+  const cancelPendingPrediction = useCallback(() => {
+    requestIdRef.current += 1;
+    requestControllerRef.current?.abort();
+    requestControllerRef.current = null;
+    setIsPredicting(false);
+  }, []);
+
   const runPrediction = useCallback(async (inputFile) => {
     const validationError = validateImageFile(inputFile);
     if (validationError) {
+      cancelPendingPrediction();
       setError(validationError);
       return;
     }
 
+    const requestId = ++requestIdRef.current;
+    requestControllerRef.current?.abort();
+    const controller = new AbortController();
+    requestControllerRef.current = controller;
     setError("");
     setIsPredicting(true);
 
@@ -138,23 +169,24 @@ export default function Predict() {
       }
       const formData = new FormData();
       formData.append("file", uploadFile);
-      const res = await api.post("/predict", formData);
+      const res = await api.post("/predict", formData, { signal: controller.signal });
+      if (requestId !== requestIdRef.current) return;
       setResult(res.data);
       if (DEMO_ONLY) rememberDemoPrediction(res.data);
       window.dispatchEvent(new CustomEvent("prediction-created"));
     } catch (requestError) {
-      const message = requestError.response?.data?.detail;
-      setError(
-        typeof message === "string"
-          ? message
-          : "Dịch vụ nhận diện tạm thời chưa phản hồi. Vui lòng thử lại sau ít phút.",
-      );
+      if (requestId !== requestIdRef.current || controller.signal.aborted) return;
+      setError(predictionErrorMessage(requestError));
     } finally {
-      setIsPredicting(false);
+      if (requestId === requestIdRef.current) {
+        requestControllerRef.current = null;
+        setIsPredicting(false);
+      }
     }
-  }, []);
+  }, [cancelPendingPrediction]);
 
   const attachFile = useCallback((nextFile, forcedPreview) => {
+    cancelPendingPrediction();
     setFile(nextFile);
     setResult(null);
     setError("");
@@ -167,11 +199,12 @@ export default function Predict() {
       if (forcedPreview) return forcedPreview;
       return URL.createObjectURL(nextFile);
     });
-  }, []);
+  }, [cancelPendingPrediction]);
 
   const onDrop = useCallback(
     (acceptedFiles, fileRejections) => {
       if (fileRejections.length > 0) {
+        cancelPendingPrediction();
         const firstRejectedFile = fileRejections[0]?.file;
         const message = validateImageFile(firstRejectedFile) || "File upload không hợp lệ.";
         setError(message);
@@ -183,6 +216,7 @@ export default function Predict() {
 
       const message = validateImageFile(nextFile);
       if (message) {
+        cancelPendingPrediction();
         setError(message);
         return;
       }
@@ -190,7 +224,7 @@ export default function Predict() {
       attachFile(nextFile);
       runPrediction(nextFile);
     },
-    [attachFile, runPrediction],
+    [attachFile, cancelPendingPrediction, runPrediction],
   );
 
   const { getRootProps, getInputProps, isDragActive, isDragReject } = useDropzone({
@@ -215,6 +249,7 @@ export default function Predict() {
   };
 
   const clearFile = () => {
+    cancelPendingPrediction();
     setFile(null);
     setResult(null);
     setError("");
@@ -239,15 +274,16 @@ export default function Predict() {
     <div className="predict-page fade-in">
       <section className="hero-panel predict-hero">
         <div className="predict-hero__copy">
-          <h2>Nhận diện tiền giấy từ một tấm ảnh.</h2>
-          <p>Chọn ảnh hoặc dùng camera để xem dự đoán, mức tin cậy và ba lớp gần nhất. Demo phân loại 25 nhãn ảnh liên quan đến tiền giấy tại 3 quốc gia.</p>
+          <p className="predict-hero__eyebrow">Banknote AI <span aria-hidden="true">/</span> Nhận diện ảnh</p>
+          <h2>Nhận diện tiền giấy từ một tấm ảnh</h2>
+          <p>Chọn ảnh hoặc dùng camera để xem mệnh giá dự đoán, độ tin cậy và ba kết quả gần nhất.</p>
           {DEMO_ONLY && <div className="predict-hero__actions">
             <a href="#thu-nhan-dien" className="primary-btn">Thử nhận diện <ArrowRight size={17} aria-hidden="true" /></a>
             <Link to="/dashboard" className="hero-text-link"><BarChart3 size={18} aria-hidden="true" />Xem biểu đồ & MLOps</Link>
           </div>}
         </div>
         <div className="predict-hero__facts" aria-label="Phạm vi demo">
-          <div><strong>03</strong><span>quốc gia</span></div>
+          <div><strong>3</strong><span>quốc gia</span></div>
           <div><strong>25</strong><span>lớp phân loại</span></div>
           <div><strong>v1.1.0</strong><span>model candidate</span></div>
         </div>
@@ -303,11 +339,11 @@ export default function Predict() {
                 {isPredicting ? (
                   <>
                     <LoaderCircle size={16} className="spin" />
-                    <span>Đang phân tích...</span>
+                    <span>Đang phân tích…</span>
                   </>
                 ) : (
                   <>
-                    <Sparkles size={16} />
+                    <ScanLine size={16} aria-hidden="true" />
                     <span>Chụp và nhận diện</span>
                   </>
                 )}
@@ -339,16 +375,16 @@ export default function Predict() {
           </div>
 
           {error ? (
-            <p className="inline-error">
+            <p className="inline-error" role="alert">
               <ShieldAlert size={15} />
               <span>{error}</span>
             </p>
           ) : null}
 
           {isPredicting ? (
-            <div className="predict-loading">
+            <div className="predict-loading" role="status" aria-live="polite">
               <LoaderCircle size={18} className="spin" />
-              <p>Model đang chạy inference, vui lòng chờ...</p>
+              <p>Model đang phân tích ảnh…</p>
             </div>
           ) : null}
         </article>
@@ -356,7 +392,7 @@ export default function Predict() {
         <article className="panel info-panel">
           <div className="panel-title">
             <CircleCheckBig size={20} />
-            <h3>Cách có kết quả tốt</h3>
+            <h3>Cách chụp ảnh</h3>
           </div>
           <ul>
             <li>Đặt tờ tiền trên nền phẳng, đủ sáng và chụp rõ cả tờ.</li>
@@ -374,11 +410,11 @@ export default function Predict() {
             <h3>Kết quả nhận diện</h3>
           </div>
 
-          <article className="main-prediction-card">
+          <article className="main-prediction-card" role="status" aria-live="polite">
             <p className="result-label">Dự đoán chính</p>
             <h2>{result.prediction || "Không xác định"}</h2>
             <p className="main-prediction-sub">
-              Giá trị ước tính: <strong>{formatMoney(result.estimated_value)}</strong>
+              Mệnh giá: <strong>{formatMoney(result.estimated_value, result.prediction)}</strong>
             </p>
           </article>
 

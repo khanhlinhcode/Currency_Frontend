@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { LogIn, LogOut, Menu, ShieldCheck } from "lucide-react";
+import { Globe2, LogIn, LogOut, Menu, ShieldCheck } from "lucide-react";
 import { AuthContext } from "../context/AuthContext";
 import { DEMO_ONLY } from "../demoMode";
 
@@ -26,7 +26,7 @@ function getSessionLabel(user, token) {
   return `${roleText} session active${username}`;
 }
 
-export default function Navbar({ onToggleSidebar }) {
+export default function Navbar({ onToggleSidebar, menuButtonRef, mobileNavOpen }) {
   const location = useLocation();
   const { token, user, logout } = useContext(AuthContext);
   const title = titleMap[location.pathname] || (location.pathname.startsWith("/mlops/runs/") ? "Chi tiết MLOps run" : "Banknote Recognition Suite");
@@ -37,10 +37,13 @@ export default function Navbar({ onToggleSidebar }) {
         <button
           type="button"
           className="topbar__menu-btn"
+          ref={menuButtonRef}
           onClick={onToggleSidebar}
-          aria-label="Mở điều hướng"
+          aria-label={mobileNavOpen ? "Đóng điều hướng" : "Mở điều hướng"}
+          aria-controls="main-sidebar"
+          aria-expanded={mobileNavOpen}
         >
-          <Menu size={20} />
+          <Menu size={20} aria-hidden="true" />
         </button>
 
         <div>
@@ -51,7 +54,7 @@ export default function Navbar({ onToggleSidebar }) {
 
       <div className="topbar__right">
         <div className="topbar__status">
-          <ShieldCheck size={16} />
+          {DEMO_ONLY ? <Globe2 size={16} aria-hidden="true" /> : <ShieldCheck size={16} aria-hidden="true" />}
           <span>{DEMO_ONLY ? "Demo công khai" : getSessionLabel(user, token)}</span>
         </div>
 

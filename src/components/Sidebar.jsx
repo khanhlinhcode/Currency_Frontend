@@ -13,6 +13,7 @@ import {
   ListChecks,
   Timer,
   RadioTower,
+  X,
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
@@ -58,7 +59,7 @@ function NavigationItems({ items, onNavigate }) {
   });
 }
 
-export default function Sidebar({ mobileNavOpen, onNavigate }) {
+export default function Sidebar({ mobileNavOpen, onNavigate, sidebarRef }) {
   const { token, role } = useContext(AuthContext);
 
   const navigation = [
@@ -68,7 +69,7 @@ export default function Sidebar({ mobileNavOpen, onNavigate }) {
   ];
 
   return (
-    <aside className={`sidebar ${mobileNavOpen ? "is-open" : ""}`} aria-label="Điều hướng chính">
+    <aside id="main-sidebar" ref={sidebarRef} className={`sidebar ${mobileNavOpen ? "is-open" : ""}`} aria-label="Điều hướng chính">
       <div className="sidebar__brand">
         <span className="sidebar__brand-icon">
           <Banknote size={21} aria-hidden="true" />
@@ -77,6 +78,7 @@ export default function Sidebar({ mobileNavOpen, onNavigate }) {
           <p className="sidebar__brand-title">Banknote AI</p>
           <p className="sidebar__brand-subtitle">Nhận diện tiền giấy</p>
         </div>
+        {DEMO_ONLY && <button type="button" className="sidebar__close-btn" onClick={onNavigate} aria-label="Đóng điều hướng"><X size={19} aria-hidden="true" /></button>}
       </div>
 
       <div className="sidebar__meta">
