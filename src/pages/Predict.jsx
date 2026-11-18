@@ -435,8 +435,8 @@ export default function Predict() {
             <div className="suspicious-warning">
               <CircleAlert size={18} />
               <p>
-                Độ tin cậy thấp hoặc mẫu ảnh có dấu hiệu không phải tiền giấy.
-                Cần kiểm tra thủ công. Hệ thống này không xác thực tiền thật hoặc tiền giả.
+                Model không xác định được mệnh giá hoặc độ tin cậy thấp.
+                Hãy kiểm tra thủ công. Hệ thống này không xác thực tiền thật hoặc tiền giả.
               </p>
             </div>
           )}
